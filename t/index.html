@@ -45,6 +45,7 @@
 				border-radius: 3px;
 			}
 
+			@media (min-width: 769px) {
 			/* background */
 			body {
 				background-color: #333;
@@ -54,6 +55,7 @@
 			}
 		  .main-container {
 				opacity: 0.75;
+			}
 			}
 
 			/* main column always spans the height of the distance */
@@ -82,6 +84,22 @@
 			.sidebar input.search {
 				width: 120px;
 				margin-top: 8px;
+			}
+
+			ul.recent-comments {
+				padding: 0;
+			}
+
+			ul.recent-comments li {
+				list-style-type: none;
+				font-size: 12pt;
+				margin-bottom: 8px;
+			}
+			
+			div.recent-comments h4 {
+				font-weight: normal;
+				letter-spacing: 2px;
+				/* color: #333; */
 			}
 
 			/* footer */
@@ -256,6 +274,16 @@
 							<li>
 								<a href="#">SMUGMUG</a>
 							</li>
+						</ul>
+					</div>
+					<hr class="visible-md-block visible-lg-block"/>
+					<div class="recent-comments visible-md-block visible-lg-block">
+						<h4>COMMENTS</h4>
+						<ul class="recent-comments">
+							<li> <span>Being</span>: <a href="#">백업은 저도 항상 고민인데..</a> </li>
+							<li> <span>Suyul</span>: <a href="#">ㅋㅋㅋ 깨알같은 일기네..</a> </li>
+							<li> <span>Suyul</span>: <a href="#">아씨.. 어리네 ToT</a> </li>
+							<li> <span>오스카</span>: <a href="#">4쇄요? 헐.. 이런 프로그래밍 전문서..</a> </li>
 						</ul>
 					</div>
 				</div>
