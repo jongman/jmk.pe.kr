@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load common_filters %}
+{% block contents %}
+					<div class="calendar">
+						<div class="section">
+							<h2 class="content-header">
+								달력 보기: {{ year }}년 {{ month }}월{% if category %}, {{ category }}{% endif %}
+
+								<span class="pull-right">
+									<small class="dates">
+										{% if category %}
+											<a href="{% url "timeline" category=category %}">
+												<span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span>
+											</a>
+											<a href="{% url "list" category=category %}">
+												<span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span>
+											</a>
+
+										{% else %}
+											<a href="{% url "timeline" %}">
+												<span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span>
+											</a>
+											<a href="{% url "list" %}">
+												<span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span>
+											</a>
+										{% endif %}
+									</small>
+								</span>
+							</h2>
+						</div>
+
+						<div class="calendar-tabular visible-md-block visible-lg-block">
+							<table class="calendar table table-bordered">
+								<thead>
+									<tr>
+										<th class="dow6">Sun</th>
+										<th>Mon</th>
+										<th>Tue</th>
+										<th>Wed</th>
+										<th>Thu</th>
+										<th>Fri</th>
+										<th>Sat</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for week in calendar %}
+										<tr height="100px">
+											{% for day, dow, posts in week %}
+												<td class="calendar-day day{{ day }} dow{{ dow }} posts{{ posts|length }}">
+													<div class="date dow{{ dow }}">
+														{% if user.is_superuser %}
+															<a href="{% url "write-journal" year=year month=month day=day %}">{{ day }}</a>
+														{% else %}
+															{{ day }}
+														{% endif %}
+													</div>
+													{% if posts %}
+														<ul class="date-posts">
+															{% for post in posts %}
+																<li>
+																	<a href="{% url "post-read" slug=post.slug %}">{{ post.title|truncatechars:8 }}</a>
+																</li>
+															{% endfor %}
+														</ul>
+													{% endif %}
+												</td>
+											{% endfor %}
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+
+						<div class="calendar-list visible-xs-block visible-sm-block">
+							<ul class="post-list">
+								{% for week in calendar %}
+								{% for day, dow, posts in week %}
+								{% for post in posts %}
+									<li>
+										<a href="{% url "post-read" slug=post.slug %}">{{ post.title }}</a> 
+											<small>
+												{{ post.timestamp|date:'Y년 n월 j일' }}
+												{% if post.permission > 0 %}
+													({{ post.permission_name }})
+												{% endif %}
+											</small>
+									</li>
+								{% endfor %}
+								{% endfor %}
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+
+					{{ pagination.render }}
+
+
+{% endblock %}

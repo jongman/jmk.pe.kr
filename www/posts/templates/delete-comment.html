@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load common_filters %}
+{% block contents %}
+<div class="comments">
+	<h3>코멘트 삭제</h3>
+
+	<ul class="comments">
+		<li>
+			<ul class="comment">
+				<li class="comment-info">
+					{% if comment.author %}
+					<span class="glyphicon glyphicon-user" title="로그인된 사용자"></span>
+					<b>{{ comment.author.username }}</b> 
+					{% else %}
+					<b>{{ comment.name }}</b>
+					{% endif %}
+					<small class="dates">
+						<a href="#c{{ comment.pk }}">{{ comment.timestamp|date:'Y년 n월 j일' }}</a>
+					</small>
+				</li>
+				<li class="comment-body">
+					{{ comment.comment|markdown }}
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<h3>삭제하시겠습니까?</h3>
+	<form method="post" action="{% url "delete-comment" comment.pk %}">
+		{% csrf_token %}
+		{% if not user.is_superuser and comment.author != user %}
+		<input type="password" name="password" placeholder="비밀번호"/>
+		{% endif %}
+		<input class="submit" type="submit" value="삭제"/>
+	</form>
+</div>
+{% endblock %}

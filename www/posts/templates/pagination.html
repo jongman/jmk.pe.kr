@@ -1,0 +1,20 @@
+						<div class="pagination">
+							<p class="text-center">
+								{% if prev %}
+									<input type="button" value="<<" class="page-navigation" target="{{ prev }}"/>
+								{% endif %}
+								<select class="page-selector">
+									{% for number, link, active in links %}
+										{% if active %}
+											<option selected>{{ number }}/{{ num_pages  }}</option>
+										{% else %}
+											<option value="{{ link }}">{{ number }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+								{% if next %}
+								<input type="button" value=">>" class="page-navigation" target="{{ next }}"/>
+								{% endif %}
+							</p>
+						</div>
+

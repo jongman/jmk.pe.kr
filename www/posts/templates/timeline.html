@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load common_filters %}
+{% block contents %}
+					<div class="blogview">
+						<div class="section">
+							<h2 class="content-header">
+								타임라인{% if category %}: {{ category }}{% endif %}
+
+								{# <small> #}
+								{# 	({{ pagination.paginator.count }}개) #}
+								{# </small> #}
+								<span class="pull-right">
+									<small class="dates">
+										{% if category %}
+											<a href="{% url "list" category=category %}">
+												<span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span>
+											</a>
+											<a href="{% url "calendar" category=category %}">
+												<span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span>
+											</a>
+
+										{% else %}
+											<a href="{% url "list" %}">
+												<span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span>
+											</a>
+											<a href="{% url "calendar" %}">
+												<span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span>
+											</a>
+										{% endif %}
+									</small>
+								</span>
+							</h2>
+						</div>
+						{% for post in pagination.page.object_list %}
+						<div class="blogentry">
+							<div class="title">
+								<h3>
+									<span class="glyphicon glyphicon-list-alt"></span>
+									<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+									<div class="pull-right visible-md-block visible-lg-block">
+										<small class="dates">
+											{% if post.permission > 0 %}
+												<span class="glyphicon glyphicon-lock"></span>
+												{{ post.permission_name }}
+											{% endif %}
+											<span class="glyphicon glyphicon-calendar"></span>
+											{{ post.timestamp|date:'Y년 n월 j일' }}
+											{% if not category %}
+												<span class="glyphicon glyphicon-tags"></span>
+												{% for category in post.tags.slugs %}
+													<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
+												{% endfor %}
+											{% endif %}
+										</small>
+									</div>
+								</h3>
+							</div>
+							<div class="post-body">
+								{{ post|render_post_excerpt }}
+							</div>
+						</div>
+						{% endfor %}
+
+						{{ pagination.render }}
+					</div>
+
+
+{% endblock %}

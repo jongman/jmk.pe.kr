@@ -1,0 +1,105 @@
+{% load common_filters %}
+						<hr/>
+						{% if comments_count > 0 %}
+							<div class="comments">
+
+								<h3>Comments <small>({{ comments_count }} so far)</small></h3>
+
+								<ul class="comments">
+									{% for depth, comment in comments %}
+									<li>
+										<a name="c{{ comment.pk }}" id="c{{ comment.pk }}"></a>
+										<ul class="comment {% if depth > 0 %}nested depth{{depth}}{% endif %}">
+											<li class="comment-info">
+												{% if comment.deleted %}
+													<span class="deleted-comment">삭제됨</span>
+												{% else %}
+													{% if comment.author %}
+													<span class="glyphicon glyphicon-user" title="로그인된 사용자"></span>
+													<b>{{ comment.author.username }}</b> 
+													{% else %}
+													<b>{{ comment.name }}</b>
+													{% endif %}
+												{% endif %}
+													<small class="dates">
+														<a href="#c{{ comment.pk }}">{{ comment.timestamp|date:'Y년 n월 j일' }}</a>
+														{% if not comment.deleted %}
+															{% if not comment.author or user.is_superuser or user == comment.author %}
+															<a href="{% url "delete-comment" comment.pk %}"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+															{% endif %}
+														{% endif %}
+														<a href="javascript:;" class="nested-comment" target="replyform{{ comment.pk }}"><span class="glyphicon glyphicon-share" title="댓글"></span></a>
+													</small>
+											</li>
+											<li class="comment-body">
+												{% if comment.deleted %}
+												<span class="deleted-comment">삭제됨</span>
+												{% else %}
+												{{ comment.comment|markdown }}
+												{% endif %}
+											</li>
+										</ul>
+									</li>
+									<li class="nested-comment-form" id="replyform{{ comment.pk }}">
+										<div id="comment_form">
+											<form method="post" action="{% url "post-comment" %}">
+												<input type="hidden" value="{{ post.pk }}" name="post"/>
+												<input type="hidden" value="{{ comment.pk }}" name="parent"/>
+												{% csrf_token %}
+												<ul class="comment-form nested depth{{depth}}">
+													<li class="comment-info">
+														{% if user.is_authenticated %}
+															<b>{{ user.username }}</b>
+														{% else %}
+															<input type="text" name="name" placeholder="이름"/>
+															<input type="password" name="password" placeholder="비밀번호"/>
+															<b>보안 질문</b> 무궁화 <input type="text" name="question" placeholder="채워주세요"/> 화려강산
+														{% endif %}
+													</li>
+													<li class="comment-body">
+														<textarea name="body" placeholder="코멘트.."></textarea>
+													</li>
+													<li class="comment-submit">
+														<input class="submit" type="submit" value="Post"/>
+													</li>
+												</ul>
+											</form>
+										</div>
+
+									</li>
+									{% endfor %}
+								</ul>
+							</div>
+						{% endif %}
+						<div class="new-comment">
+							<h3>New comment</h3>
+							<ul class="comments">
+								<li>
+									<div id="comment_form">
+										<form method="post" action="{% url "post-comment" %}">
+											<input type="hidden" value="{{ post.pk }}" name="post"/>
+											<input type="hidden" value="" name="parent"/>
+											{% csrf_token %}
+											<ul class="comment-form">
+												<li class="comment-info">
+													{% if user.is_authenticated %}
+														<b>{{ user.username }}</b>
+													{% else %}
+														<input type="text" name="name" placeholder="이름"/>
+														<input type="password" name="password" placeholder="비밀번호"/>
+														<b>보안 질문</b> 무궁화 <input type="text" name="question" placeholder="채워주세요"/> 화려강산
+													{% endif %}
+												</li>
+												<li class="comment-body">
+													<textarea name="body" placeholder="코멘트.."></textarea>
+												</li>
+												<li class="comment-submit">
+													<input class="submit" type="submit" value="Post"/>
+												</li>
+											</ul>
+										</form>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>

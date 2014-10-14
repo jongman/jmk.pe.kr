@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load common_filters %}
+{% block contents %}
+
+	<div class="postform">
+		<h2 class="content-header"> {{ action }} </h2> 
+		<form method="post" id="form" class="form-horizontal" role="form">
+			{% csrf_token %}
+			{% if form.non_field_errors %}
+				{{ form.non_field_errors }}
+			{% endif %}
+			{% for field in form %}
+				<div class="row form-group {% if field.errors %}has-error{% endif %}">
+					<label class="col-sm-2 control-label">{{ field.label_tag }}</label>
+					<div class="col-sm-10">
+						{{ field }}
+						{% for error in field.errors %}
+							<span class="help-block">{{ error }}</span>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+				<div class="row form-group">
+					<label class="col-sm-2 control-label">첨부</label>
+					<div class="col-sm-10">
+						<input id="upload-attachment" type="button" value="업로드"/>
+						{# <input id="upload-attachment2" type="button" value="&nbsp;" class="in-progress"/> #}
+						<input id="import-attachments" type="button" value="앨범에서 가져오기"/>
+
+
+						<ul id="attachments">
+							<li class="attachment attachment-template">
+								<div class="handle">
+										<span class="handle-icon glyphicon glyphicon-align-justify"></span>
+										<a href="#" class="remove-icon"><span class="glyphicon glyphicon-remove"></span></a>
+										<span class="pk">#</span>
+								</div>
+								<div class="thumb">
+									<a class="lightbox-link" href="{% static "large.jpg" %}"><img src="{% static "thumbnail.jpg" %}"/></a>
+								</div>
+								<div class="description">
+										<textarea class="fixed-size"></textarea>
+								</div>
+							</li>
+							{% for att in attachments %}
+							<li class="attachment">
+								<div class="handle">
+										<span class="handle-icon glyphicon glyphicon-align-justify"></span>
+										<a href="#"><span class="glyphicon glyphicon-remove"></span></a>
+										<span class="pk" title="{{ att.pk }}">#</span>
+								</div>
+								<div class="thumb">
+									<a class="lightbox-link" href="{{ att.file }}"><img src="{{ att.thumbnail }}"/></a>
+								</div>
+								<div class="description">
+									<textarea class="fixed-size">{{ att.notes }}</textarea>
+								</div>
+							</li>
+							{% endfor %}
+						</ul>
+
+					</div>
+				</div>
+			<div class="row">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-10">
+					<input type="submit" value="Submit"/>
+				</div>
+			</div>
+
+			<input type="hidden" value="" name="serialized_attachments" id="id_serialized_attachments"/>
+		</form>
+	</div>
+{% endblock %}
+
+{% block tail %}
+	
+	<div id="picture-picker">
+		<table id="forgiveme">
+			<tr>
+				<td width="200px">
+					<div id="folders-pane" class="folders">
+						<h4>폴더</h4>
+						<ul class="folder-list">
+							<li class="folder-template"><a href="#" class="folder-link" data-folder="starred"><span class="glyphicon glyphicon-star-empty"></span> (Starred)</a></li>
+						</ul>
+					</div>
+				</td>
+				<td>
+					<div class="contents" id="contents-pane">
+						<h4><span id="folder_name">폴더 내용</span> <small><input type="checkbox" id="starred"/> Starred</small></h4>
+						<div class="folder-entry folder-entry-template">
+							<a class="lightbox-folder-link" href=""><img src="" data-pk=""/></a>
+							<a class="pick" href="#">
+								<span class="glyphicon glyphicon-ok"></span>
+							</a>
+						</div>
+						<div id="folder-contents">
+						</div>
+					</div>
+				</td>
+				<td width="180px">
+					<div class="picked-thumbnails">
+						<h4>선택된 사진들</h4>
+						<div id="picked-list">
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr height="40px">
+				<td colspan="3" class="buttons">
+					<input type="button" value="Choose" id="choose"/>
+					<input type="button" value="Cancel" id="cancel"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<script language="javascript" src="{% static "ajaxupload.js" %}"></script>
+	<script language="javascript" src="{% static "bootstrap-datepicker.js" %}"></script>
+	<script language="javascript" src="{% static "jquery-ui.min.js" %}"></script>
+	<script language="javascript">
+
+		var uploading = false;
+
+		function summarize_attachments() {
+			var attachments = Array();
+			$(".attachment").each(function(index, elem) {
+				elem = $(elem);
+				if(elem.hasClass('attachment-template')) return;
+				attachments.push({
+					'pk': elem.find('.pk').attr('title'),
+					'file': elem.find('.lightbox-link').attr('href'),
+					'thumbnail': elem.find('img').attr('src'),
+					'notes': elem.find('textarea').val()
+				});
+			});
+			return JSON.stringify(attachments);
+		}
+		function load_folder(folder) {
+			$("#contents-pane").addClass("loading");
+			$("#folder_name").html(folder);
+			$("#folder-contents").html("");
+			$.getJSON("{% url "list-attachment" %}", {'folder': folder},
+				function(data) {
+					$("#contents-pane").removeClass("loading");
+					var template = $(".folder-entry-template");
+					for(var i = 0; i < data.length; ++i) {
+						var cloned = template.clone().removeClass("folder-entry-template");
+						cloned.find("a").attr("href", data[i].file);
+						cloned.find("img").attr("src", data[i].thumbnail).attr("data-pk", data[i].pk);
+						cloned.appendTo("#folder-contents");
+						{# $('<a class="lightbox-folder-link" href="' + data[i].file + '"><img src="' + data[i].thumbnail + '" data-pk="' + data[i].pk + '"/></a>').appendTo("#folder-contents"); #}
+					}
+					$(".lightbox-folder-link").imageLightbox({
+						animationSpeed: 0,
+						quitOnImgClick: true,
+						preloadNext: true,
+						{# onStart: open_overlay, #}
+						{# onEnd: close_overlay, #}
+					});
+					$(".pick").click(function() {
+						var cloned = $(this).parent().find('img').parent().clone();
+						console.log(cloned);
+						cloned.unbind('click');
+						cloned.click(function() { cloned.remove(); return false; });
+						cloned.appendTo("#picked-list");
+						return false;
+					});
+				});
+		}
+
+		function load_folder_list() {
+			$("#folders-pane").addClass("loading");
+			$.getJSON("{% url "list-attachment-folders" %}", function(data) {
+				if(data.length > 0) 
+					load_folder(data[0]);
+				$("#folders-pane").removeClass("loading");
+				$(".folder-list li").each(function() {
+					if(!$(this).hasClass('folder-template'))
+						$(this).remove();
+				});
+				var template = $(".folder-list li.folder-template");
+				for(var i = 0; i < data.length; ++i) {
+					var cloned = template.clone().removeClass("folder-template");
+					cloned.find("a").data("folder", data[i]).html(data[i]).click(function() { 
+						var folder = $(this).data('folder');
+						load_folder(folder);
+					});
+					cloned.appendTo(".folder-list");
+				}
+
+			});
+		}
+
+		$(function() {
+			$("#id_dated").datepicker({
+				format: 'yyyy-mm-dd',
+				todayHighlight: true,
+				autoclose: true
+			});
+			$("#id_tags").each(function() {
+				var preset = $(this).val() === "" ? [] : $(this).val().split(',');
+				$(this).superblyTagField({
+					allowNewTags: true,
+					preset: preset,
+					tags: [
+					{% for tag in tags %}
+						'{{ tag.name }}',
+					{% endfor %}
+					]
+					
+				})
+			});
+			$(".postform").keydown(function(e) {
+				if(e.keyCode == 13 && e.altKey) {
+					$("#form").submit();
+					return false;
+				}
+			});
+			$("#attachments").sortable({
+				handle: '.handle-icon',
+			});
+			// new post?
+			if($("#id_title").val() === "") {
+				$("#id_title").on('input', function() {
+					$("#id_slug").val(slugify($(this).val()));
+				});
+				$("#id_title").focus();
+			}
+
+			$("#form").submit(function() {
+				if(uploading) {
+					alert("Uploading!");
+					return false;
+				}
+				window.onbeforeunload = function() { }
+				
+				$("#id_serialized_attachments").val(summarize_attachments());
+			});
+
+			function add_attachment(file_path, thumbnail_path, pk) {
+				var template = $(".attachment-template");
+				var cloned = template.clone();
+				cloned.removeClass("attachment-template");
+				cloned.find(".lightbox-link").attr("href", file_path);
+				cloned.find(".lightbox-link img").attr("src", thumbnail_path);
+				cloned.find(".remove-icon").click(function() { cloned.remove(); });
+				cloned.find(".pk").attr('title', pk);
+				$("#attachments").append(cloned);
+			}
+
+			new AjaxUpload("upload-attachment", {
+				action: "{% url "new-attachment" %}",
+				data: {
+					csrfmiddlewaretoken: $("form input[name=csrfmiddlewaretoken]").val()
+				},
+				name: "file",
+				autoSubmit: true,
+				responseType: "json",
+				onSubmit: function() {
+					uploading = true;
+					$("#upload-attachment").attr('value', '  ').addClass('in-progress');
+				},
+				onComplete: function(file, response) {
+					uploading = false;
+					$("#upload-attachment").attr('value', '업로드').removeClass('in-progress');
+
+					if(response.success) {
+						if(response.is_picture) {
+							add_attachment(response.file_path, response.thumbnail_path, response.pk);
+						}
+						else {
+							var public = $("#id_body_public");
+							public.val(public.val() + "\n[" + file + "](" + response.file_path + ")");
+							alert("Attached a non-image file: link appended to post body.");
+						}
+					}
+				}
+			});
+
+			$("#import-attachments").click(function() {
+				$("#picture-picker").show('fast');
+				$("#picked-list").html('');
+				$("body").addClass("modal-open");
+				load_folder_list();
+
+			});
+
+			$(".folder-link").click(load_folder);
+
+			function close_picker() {
+				$("#picture-picker").hide('fast');
+				$("body").removeClass("modal-open");
+			}
+			$("#cancel").click(close_picker);
+			$("#choose").click(function() {
+				$("#picked-list a").each(function(index, elem) {
+					console.log($(elem));
+					var file = $(elem).attr("href");
+					var thumbnail = $(elem).find("img").attr("src");
+					var pk = $(elem).find("img").attr("data-pk");
+					add_attachment(file, thumbnail, pk);
+				});
+				close_picker();
+			});
+
+			window.onbeforeunload = function() {
+				return "정말 나가시겠어요?";
+			}
+		});
+	</script>
+
+{% endblock %}

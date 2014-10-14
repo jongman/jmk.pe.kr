@@ -1,0 +1,64 @@
+<script>
+	$(function() {
+		$("body").addClass("modal-open");
+		adjust_size();
+		$(window).on('resize', adjust_size);
+
+		attach_events_to_entry_buttons();
+		
+
+	});
+</script>
+<div id="gallery-root">
+	<div class="contents">
+		<div class="header">
+			<input type="button" value="<<"/>
+			<select>
+				<option value="2014-09-uploaded">2014-09-uploaded</option>
+				<option value="2014-10-uploaded">2014-09-uploaded</option>
+				<option value="2014-09-smugmug">2014-09-smugmug</option>
+				<option value="2014-08-smugmug">2014-08-smugmug</option>
+			</select>
+			<input type="button" value=">>"/>
+			<select>
+				<option value="starred">Show Only Starred</option>
+				<option value="everything">Show Everything</option>
+				<option value="include-hidden">Show Hidden Pictures</option>
+			</select>
+		</div>
+		<div class="entries">
+			<h4 class="date">2014-10-01 (10 pictures)</h4>
+			<div class="entry-template entry">
+				<img data-pk="1234" data-full-url="/dsfsdfs" src="/media/attachments/5beb882ea2e0dde397c1fccb7a5f87ed/thumbnail.jpg"/>
+				<div class="title">DSC07002.JPG</div>
+				<div class="buttons">
+					<a title="Starred" href="#"><span class="glyphicon is-starred glyphicon-star"></span></a>
+					<a title="Not hidden" href="#"><span class="glyphicon is-hidden glyphicon-eye-open"></span></a>
+					<a class="pick-button" title="Pick" href="#"><span class="glyphicon glyphicon-share"></span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebar">
+
+		<div class="selected">
+			<div class="entry-template entry">
+				<span class="img-slot">
+				<img data-pk="1234" data-full-url="/dsfsdfs" src="/media/attachments/5beb882ea2e0dde397c1fccb7a5f87ed/thumbnail.jpg" width="100px"/>
+				</span>
+				<div class="buttons">
+					<a title="Not hidden" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+	<div class="menu">
+		<span>
+			<!-- <input type="button" value="취소"/> -->
+			<!-- <input type="button" value="추가"/> -->
+			<input type="button" value="닫기"/>
+		</span>
+	</div>
+</div>

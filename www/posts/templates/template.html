@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JMK</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+		<style>
+			/* basic typography */
+			body, h1, h2, h3 {
+				font-family: "Lucida Grande","NanumGothic","Malgun Gothic",Helvetica,Arial,sans-serif
+				/* font-family: 'Nanum Gothic', NanumGothic, 'Malgun Gothic', MalgunGothic, sans-serif; */
+				color: #111;
+			}
+			.written {
+				line-height: 160%; 
+			}
+			a {
+				color: #933;
+				/* text-decoration: underline; */
+			}
+			body {
+				font-size: 14pt;
+			}
+			textarea, input, select {
+				font-size: 12pt;
+			}
+
+			/* input and textareas */
+			textarea, input, select {
+				padding: 4px;
+				border: 1px solid #ccc;
+				background-color: #eee;
+				border-radius: 3px;
+			}
+
+			@media (min-width: 769px) {
+			/* background */
+			body {
+				background-color: #333;
+				background-size: cover;
+				background-image: url(pebbles-blurred.jpg);
+				background-attachment: fixed;
+			}
+		  .main-container {
+				opacity: 0.75;
+			}
+			}
+
+			/* main column always spans the height of the distance */
+			body, html, .main-container {
+				min-height: 100%;
+			}
+			.margin-top {
+				width: 100%;
+				height: 1px;
+				margin-bottom: 16px;
+			}
+			.main-container {
+				box-shadow: 0px 0px 16px #000;
+				background-color: #fff;
+				padding-bottom: 16px;
+				border-radius: 5px;
+			}
+			/* sidebar */
+			.sidebar h1 a {
+				color: #633;
+			}
+			.sidebar h1 small {
+				color: #666;
+				font-size: 12pt;
+			}
+			.sidebar input.search {
+				width: 120px;
+				margin-top: 8px;
+			}
+
+			ul.recent-comments {
+				padding: 0;
+			}
+
+			ul.recent-comments li {
+				list-style-type: none;
+				font-size: 12pt;
+				margin-bottom: 8px;
+			}
+			
+			div.recent-comments h4 {
+				font-weight: normal;
+				letter-spacing: 2px;
+				/* color: #333; */
+			}
+
+			/* footer */
+			.footer {
+				color: #999;
+				margin-top: 20px;
+				margin-bottom: 60px;
+			}
+
+			/* menu */
+			ul.main-menu {
+				letter-spacing: 2px;
+				padding: 0;
+				display: table;
+				margin: 0;
+				margin-bottom: 16px;
+			}
+			ul.main-menu li {
+				list-style-type: none;
+				margin-right: 12px;
+			}
+			@media (max-width: 991px) {
+				ul.main-menu {
+					margin-bottom: 0;
+				}
+				ul.main-menu li {
+					display: inline;
+				}
+			}
+
+			ul.main-menu li a {
+				text-decoration: none;
+			}
+
+			small.dates {
+				font-size: #777;
+				font-weight: 400;
+				font-size: 12pt;
+			}
+
+			/* list view */
+			.listview .section {
+				border-bottom: 1px solid #aaa;
+				margin-bottom: 12px;
+			}
+
+
+			/* blog view */
+			.blogview .section {
+				border-bottom: 1px solid #aaa;
+				margin-bottom: 12px;
+			}
+
+			.blogview .entry .title {
+				border: 0;
+			}
+
+			.blogview .pagination {
+				width: 100%;
+			}
+
+			.blogview input {
+				height: 40px;
+				width: 40px;
+			}
+			.blogview select {
+				width: 120px;
+				height: 40px;
+			}
+
+			/* entry */
+			.entry .title {
+				border-bottom: 1px solid #aaa;
+				margin-bottom: 12px;
+			}
+
+			/* comments */
+			ul.comment, ul.comments, ul.comment-info, ul.comment-form {
+				padding: 0;
+			}
+			ul.comment small {
+				opacity: 0.5;
+			}
+
+			ul.comment ul.comments {
+				margin-left: 10px;
+			}
+			ul.comment li, ul.comments li, ul.comment-info li, ul.comment-form li {
+				list-style-type: none;
+				width: 100%;
+				padding: 0;
+			}
+			ul.comment-form li {
+				margin-top: 4px;
+				margin-bottom: 4px;
+				width: 100%;
+			}
+			ul.comment-form textarea {
+				width: 99%;
+				height: 80px;
+				margin: 0;
+			}
+			ul.comment-form li.comment-info {
+				margin-bottom: 12px;
+			}
+			ul.comment-form li.comment-info input {
+				margin-right: 8px;
+			}
+			ul.comment-form input.submit {
+				padding-left: 16px;
+				padding-right: 16px;
+				background-color: #eee;
+			}
+
+			/* nested comment */
+			ul.comment ul.comment { 
+				border-left: 5px solid #ddd;
+				margin-left: 20px;
+				padding-left: 10px;
+			}
+			
+
+
+		</style>
+
+  </head>
+  <body>
+		<div class="margin-top visible-md-block visible-lg-block">
+		</div>
+		<div class="container main-container">
+			<div class="row">
+				<div class="col-md-2 sidebar">
+					<div>
+						<h1>
+							<a href="/">JMK</a><span class="hidden-sm hidden-xs">:</span>
+						</h1>
+						<small class="hidden-sm hidden-xs">
+							because every life is only as good as it is remembered.
+						</small>
+					</div>
+					<hr class="hidden-sm hidden-xs"/>
+					<div>
+						<ul class="main-menu">
+							<li>
+								<a href="#">ABOUT</a>
+							</li>
+							<li>
+								<a href="#">JOURNAL</a>
+							</li>
+							<li>
+								<a href="#">WRITINGS</a>
+							</li>
+							<li>
+								<a href="#">ALBUMS</a>
+							</li>
+							<li>
+								<a href="#">TRACKER</a>
+							</li>
+							<li>
+								SEARCH
+									<input type="text" class="search" placeholder="query">
+							</li>
+						</ul>
+
+						<ul class="main-menu">
+							<li>
+								<a href="#">SIGN IN</a>
+							</li>
+							<li>
+								<a href="#">NEW POST</a>
+							</li>
+							<li>
+								<a href="#">SMUGMUG</a>
+							</li>
+						</ul>
+					</div>
+					<hr class="visible-md-block visible-lg-block"/>
+					<div class="recent-comments visible-md-block visible-lg-block">
+						<h4>COMMENTS</h4>
+						<ul class="recent-comments">
+							<li> <span>Being</span>: <a href="#">백업은 저도 항상 고민인데..</a> </li>
+							<li> <span>Suyul</span>: <a href="#">ㅋㅋㅋ 깨알같은 일기네..</a> </li>
+							<li> <span>Suyul</span>: <a href="#">아씨.. 어리네 ToT</a> </li>
+							<li> <span>오스카</span>: <a href="#">4쇄요? 헐.. 이런 프로그래밍 전문서..</a> </li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="col-md-10 written">
+
+					<div class="listview">
+						<div class="section">
+							<h2>
+								모든 글들
+								<small>
+									(1724개)
+								</small>
+								<div class="pull-right">
+									<small class="dates">
+										<a href="#"><span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span></a>
+										<a href="#"><span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span></a>
+										<a href="#"><span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span></a>
+									</small>
+								</div>
+							</h2>
+						</div>
+						<ul class="entrylist">
+							<li class="entry">
+								<a href="#">20140927</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+							<li class="entry">
+								<a href="#">20140926</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+							<li class="entry">
+								<a href="#">20140925</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+							<li class="entry">
+								<a href="#">20140924</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+							<li class="entry">
+								<a href="#">20140923</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+							<li class="entry">
+								<a href="#">20140927</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+							<li class="entry">
+								<a href="#">20140927</a>
+								<small class="dates">
+									(2013년 2월 6일)
+								</small>
+							</li>
+						</ul>
+					</div>
+
+					<hr/>
+
+					<div class="blogview">
+						<div class="section">
+							<h2>
+								모든 글들
+								<small>
+									(1724개, 127페이지)
+								</small>
+								<div class="pull-right">
+									<small class="dates">
+										<a href="#"><span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span></a>
+										<a href="#"><span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span></a>
+										<a href="#"><span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span></a>
+									</small>
+								</div>
+							</h2>
+						</div>
+						<div class="blogentry">
+							<div class="title">
+								<h3>
+									<a href="#">대학의 의미</a>
+									<div class="pull-right visible-md-block visible-lg-block">
+										<small class="dates">
+											<span class="glyphicon glyphicon-calendar"></span>
+											2013년 2월 6일 
+										</small>
+									</div>
+								</h3>
+							</div>
+							<div class="body">
+	<p>고대와 경찰대를 포기하고 NHN NEXT에 가겠다는 자녀를 둔 <a href="http://www.82cook.com/entiz/read.php?num=1486099">부모의 글</a> 때문에 트위터가 시끌시끌하다. 내 트위터에 개발자가 많아서 그런지, 학벌만 중시하는 고리타분한 사고방식을 버릴 때가 되었다는 반응들이다. <s>물론 고대를 가느니 NEXT를 가는게 낫지요 아무럼요</s></p>
+							<p>
+								<a href="#">[계속 읽기]</a>
+							</p>
+							</div>
+						</div>
+						<div class="blogentry">
+							<div class="title">
+								<h3>
+									<a href="#">20140924, 20140925</a>
+									<div class="pull-right visible-md-block visible-lg-block">
+										<small class="dates">
+											<span class="glyphicon glyphicon-calendar"></span>
+											2014년 9월 26일
+										</small>
+									</div>
+								</h3>
+							</div>
+							<div class="body">
+	<p>수요일: cvx 공부하다가 재하 픽업. 수ì´이 와서 교대하고 머피책 좀 보고, 냉면집에서 저녁 먹고, ML 스터디. 푸켓 여행 질렀..다고 일기에 썼던가? 그래서 트립어드바이저 뒤지면서 푸켓 여행 한참 찾음 ㅋㅋ 숙소 둘다 정하고 잠!</p>
+
+	<p>목요일: 재하 데리고 아산병원 가서 알러지 검사 결과 들음. 계란 알러지는 많이 없어지고, 개털 알러지가 심해졌단 소식.. 그래도 계란 알러지 줄어든게 어디냐!! ㅠ.ㅠ 크으. 비실대던 자동차 배터리도 카센터 가서 갈고, 광나루역 가서 안경 새 렌즈랑 도금 맡기고 일회용 렌즈 샀다. 옛날에 쓰던 안경을 오랜만에 쓰니까 어색해 죽겠음. 그리고 엔씨 갔다가 롯데 가려고 나왔는데 늦어서 못감 (...) 허어.. 하여간 저녁에도 일좀 하고 알고스팟에 밀린 답변좀 달고. 출국을 얼마 안 남겨 두고 (42일 남았다) 싱숭생숭한 맘을 재하 재우고 두런두런 얘기하며 달램... Hㅏ... ㅜㅜ</p>
+
+							</div>
+						</div>
+						<div class="pagination">
+							<p class="text-center">
+								<input type="button" value="<<"/>
+								<select class="page">
+									<option>1/127</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+								</select>
+								<input type="button" value=">>"/>
+							</p>
+						</div>
+					</div>
+
+					<hr/>
+
+					<div class="entry">
+						<div class="title">
+							<h2>
+								대학의 의미
+								<div class="pull-right visible-md-block visible-lg-block">
+									<small class="dates">
+										<a href="#"><span class="glyphicon glyphicon-edit" title="편집"></span></a>
+										<a href="#"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+										<span class="glyphicon glyphicon-calendar"></span>
+										2013년 2월 6일 
+											<span class="glyphicon glyphicon-folder-open"></span>
+											<a href="#">Journal</a>
+									</small>
+								</div>
+							</h2>
+							<div class="visible-xs-block visible-sm-block">
+								<small class="dates">
+									<a href="#"><span class="glyphicon glyphicon-edit" title="편집"></span></a>
+									<a href="#"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+									<span class="glyphicon glyphicon-calendar"></span>
+									2013년 2월 6일 
+											<span class="glyphicon glyphicon-folder-open"></span>
+											<a href="#">Journal</a>
+								</small>
+							</div>
+						</div>
+						<div class="body">
+
+	<p>고대와 경찰대를 포기하고 NHN NEXT에 가겠다는 자녀를 둔 <a href="http://www.82cook.com/entiz/read.php?num=1486099">부모의 글</a> 때문에 트위터가 시끌시끌하다. 내 트위터에 개발자가 많아서 그런지, 학벌만 중시하는 고리타분한 사고방식을 버릴 때가 되었다는 반응들이다. <s>물론 고대를 가느니 NEXT를 가는게 낫지요 아무럼요</s></p>
+
+<p>내가 그 학생 입장이라면 어떤 선택을 할까 생각을 해 봤다. 나는 전산학 공부만을 목표로 하고 대학에 들어와 전산학을 전공하고, 지금은 프로그래밍을 하고 있는 사람이다. 어설프지만 프로그래밍 책도 썼다. 트레이딩 회사에서 일하지만 취미로 웹사이트를 만든다. 한가한 시간에는 프로그래밍 대회를 개최하고, 프로그래밍 대회 커뮤니티를 운영한다. 내 인생에 컴퓨터가 이렇게 중요하니, 컴퓨터를 제대로 공부할 수 있는 기회가 있다면 당연히 그것을 선택하지 않을까?</p>
+
+<p>하지만 나는 NEXT와 대학교 중에 선택하라면 당연히 대학교를 선택해야 한다고 생각한다. 학부 시절은 인생에서 유일하게, '하고 싶다' 그리고 '배우고 싶다'라는 이유만으로 새로운 것을 시도하고 배울 수 있는 시간이기 때문이다. 한국의 모든 학생들은 고3때까지 자기 인생에 관한 어떤 선택도 할 수 없다. 학부를 졸업하고 사회에 나가면 사회의 룰에 따라야 한다. 결국 남의 규칙에 따르지 않고 자기가 원하는 것을 자유롭게 할 수 있는 시간은 학부 시절 뿐이다. 한번도 자유로운 선택을 해 보지 않은 고3 학생이, 자신의 인생에 관해 선택할 기회를 접어 버릴 이유가 없다.</p>
+
+<p>NEXT에 자유가 없다는 것은 아니다. 틀림없이 프로그래밍만이 아니라 좋은 개발자에게 필요한 중요한 기술들과 지식들, 교양들도 가르칠 것이고, 자신이 원하는 프로젝트를 진행할 기회도 있겠지. 하지만 개발자가 되는 것과 아무런 상관이 없는 것은 어떻게 하나? 영문학과 세미나, 포크 댄스 수업, 수학과 랜덤 프로세스 수업은 이제 자유의 선택지엔 더 이상 없다. 왜냐면 NEXT는 좋은 개발자를 양성하기 위한 곳이기 때문이다. 명확한 목표가 있고, 따라서 목표와 관계 없는 것은 없다.</p>
+
+<p>어디건, 교육으로 얻을 수 있는 것은 기술일 뿐이다. 교육이 당신을 좋은 엔지니어, 혹은 좋은 전산학자로 만들어 주지 않는다. 필요한 것은 스스로의 관심과 호기심이다. 그렇다면 어디에서 무엇을 하건간에 좋은 엔지니어와 전산학자가 되는 것이 가능하다는 결론이 나온다. 그렇다면 왜 다양한 것을 공부하고 해 보는 것이 중요한가? 내가 다양한 것을 할 수 있다는 것을 아는 것이 중요하다. "내가 할 수 있는 것"의 범위는 어느 순간 정해져 그 밖을 벗어나기 힘들어진다. 이것도 해보고, 저것도 해보고, 다양한 것을 해 본 사람은 그 범위가 훨씬 넓을 수도 있고, 그 범위 안에 갇히지 않을 수도 있다. 다양한 것을 할 줄 아는 사람의 인생은 더 풍요롭다.</p>
+
+<p>물론 이 모든 것은 기회이고, 확률일 뿐이다. 기회가 사람을 만들지 못한다. 자유로운 학부에 다니면서도 아무런 기회를 잡지 않을 수 있고, 회사에 다니면서도 자신이 원하는 것을 잘 공부하고 <s>덕력</s>지식과 능력을 쌓아가는 사람도 있다. 따라서 원하는 것이 확고하다면 그것을 남들보다 먼저, 그리고 효율적으로 배울 수 있는 기회를 포기할 이유 또한 없다. 그래서 이 모든 것은 사실 개인의 선택이다.</p>
+
+<p>하지만 나는 아직도 학부 시절에 좀더 <s>잡다</s>다양한 수업을 듣지 않은 것을, 아니 인생을 덜 낭비한 것이 후회된다. 졸업한 나에겐 이제 다른 것을 공부할 기회가 거의 없기 때문이다.</p>
+
+<p>덧) 이 글 쓰고 원글 댓글을 보다 보니 고대는 인문학부였구나. 개발에 관심있는 친구인데 왜 인문학부를 넣었을까. 그래도 이중전공이나 전과할수도 있을텐데. ㅜㅜ</p>
+
+						</div>
+						<div class="comments">
+
+							<h3>Comments</h3>
+							<hr/>
+
+							<ul class="comments">
+								<li>
+									<ul class="comment">
+										<li class="comment-info">
+											<b>행인</b>
+												<small class="dates">
+													2013년 7월 2일
+													<a href="#"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+												</small>
+										</li>
+										<li class="comment-body">
+											<p>하고싶은걸 하는데는 때나 나이가 있을까요? 가족 이야기가 나온다면 자신에게 솔직하지 못한거겠죠?
+											</p>
+										</li>
+										<li>
+											<ul class="comments">
+												<li>
+													<ul class="comment">
+														<li class="comment-info">
+															<b>JM</b>
+																<small class="dates">
+																	2013년 7월 2일
+																	<a href="#"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+																</small>
+														</li>
+														<li class="comment-body">
+															<p>
+																@행인, 오.. 이런 리플도 다 달리는군요. ㅎㅎ 제가 가족 핑계 대고 저 포도는 셔서 맛없을꺼야.. 라고 말하는 것처럼 느껴지신 것 같습니다.
+															</p>
+
+															<p>
+																다시 와서 보실지 모르겠습니다만, 하고싶은걸 하는 데 좋은 때와 나이가 당연히 있습니다. 취미생활이야 잘하건 못하건 무슨 상관이겠습니까만 자신이 한 분야에서 일가를 이루고 성장하고 싶다면 선택과 집중을 해야 하는 시점은 당연히 찾아오기 마련이지요. 뭐 저보다 그릇이 훨씬 크신 분들은 좋아하는 여러 가지 일들을 다 잘 하시기도 합니다만, 저는 그 선택을 이미 했습니다. 그리고 가정이 생겨서 책임이 무거워지니 지금 선택한 길을 더 잘 가야겠다는 생각이 드는군요.
+															</p>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<ul class="comment">
+										<li class="comment-info">
+											<b>행인</b>
+												<small class="dates">
+													2013년 7월 2일
+													<a href="#"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+												</small>
+										</li>
+										<li class="comment-body">
+											<p>하고싶은걸 하는데는 때나 나이가 있을까요? 가족 이야기가 나온다면 자신에게 솔직하지 못한거겠죠?
+											</p>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<div>
+							<h3>New comment</h3>
+							<ul class="comments">
+								<li>
+									<ul class="comment-form">
+										<li class="comment-info">
+											<input type="text" placeholder="Name"/>
+											<input type="password" placeholder="Password"/></li>
+										<li class="comment-body">
+											<textarea placeholder="Comment.."></textarea></li>
+										<li class="comment-submit">
+											<input class="submit" type="submit" value="Post"/>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="container footer">
+			<div class="row">
+				<div class="col-md-12">
+					<p class="text-center">
+						jmk.pe.kr since 2008, whinii.com since 1999
+					</p>
+				</div>
+			</div>
+		</div>
+				
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

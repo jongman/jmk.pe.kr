@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load common_filters %}
+{% block contents %}
+					<div class="category-list">
+						<div class="section">
+							<h2 class="content-header">
+								모든 카테고리 
+								<small>총 {{ categories|length }}개</small>
+							</h2>
+						</div>
+
+						{% for category, cnt, posts in categories %}
+							<div class="category">
+								<h3><a href="{% url "timeline" category=category.name %}">{{ category.name }}</a> <small>(총 {{ cnt }}개의 글)</small></h3>
+								<ul class="post-list">
+									{% for post in posts %}
+										<li>
+											<a href="{% url "post-read" slug=post.slug %}">{{ post.title }}</a> 
+												<small>
+													{{ post.timestamp|date:'Y년 n월 j일' }}
+													{% if post.permission > 0 %}
+														({{ post.permission_name }})
+													{% endif %}
+												</small>
+										</li>
+									{% endfor %}
+									{% if cnt > 3 %}
+										<li>...</li>
+									{% endif %}
+								</ul>
+							</div>
+						{% endfor %}
+					</div>
+
+
+{% endblock %}

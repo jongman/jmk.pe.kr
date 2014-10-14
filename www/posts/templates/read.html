@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load common_filters %}
+{% block contents %}
+					<div class="entry">
+						<div class="title">
+							<h2 class="content-header">
+								<span class="heading glyphicon glyphicon-list-alt"></span>
+								{{ post.title }}
+								<div class="pull-right visible-md-block visible-lg-block">
+									<small class="dates">
+										{% if user.is_superuser %}
+											<a href="{% url "post-write" post.pk %}"><span class="glyphicon glyphicon-edit" title="편집"></span></a>
+											<a class="confirm" href="{% url "post-delete" post.pk %}"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+										{% endif %}
+										{% if post.permission > 0 %}
+											<span class="glyphicon glyphicon-lock"></span>
+											{{ post.permission_name }}
+										{% endif %}
+										<a href="{% url "calendar" year=post.dated.year month=post.dated.month %}">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</a>
+										{{ post.timestamp|date:'Y년 n월 j일' }}
+										<span class="glyphicon glyphicon-tags"></span>
+										{% for category in post.tags.slugs %}
+											<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
+										{% endfor %}
+										{% if attachments %}
+											{% if album_type == 'full' %}
+												<a href="{% url "post-read-thumbnails" slug=post.slug %}"><span class="glyphicon glyphicon-th" title="썸네일로 보기"></span></a>
+											{% else %}
+												<a href="{% url "post-read-full" slug=post.slug %}"><span class="glyphicon glyphicon-picture" title="큰 사진으로 보기"></span></a>
+											{% endif %}
+										{% endif %}
+									</small>
+								</div>
+							</h2>
+							<div class="visible-xs-block visible-sm-block">
+								<small class="dates">
+									{% if user.is_superuser %}
+										<a href="{% url "post-write" post.pk %}"><span class="glyphicon glyphicon-edit" title="편집"></span></a>
+										<a class="confirm" href="{% url "post-delete" post.pk %}"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+									{% endif %}
+									{% if post.permission > 0 %}
+										<span class="glyphicon glyphicon-lock"></span>
+										{{ post.permission_name }}
+									{% endif %}
+									<span class="glyphicon glyphicon-calendar"></span>
+										{{ post.timestamp|date:'Y년 n월 j일' }}
+										<span class="glyphicon glyphicon-tags"></span>
+										{% for category in post.tags.slugs %}
+											<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
+										{% endfor %}
+										{% if attachments %}
+											{% if album_type == 'full' %}
+												<a href="{% url "post-read-thumbnails" slug=post.slug %}"><span class="glyphicon glyphicon-th" title="썸네일로 보기"></span></a>
+											{% else %}
+												<a href="{% url "post-read-full" slug=post.slug %}"><span class="glyphicon glyphicon-picture" title="큰 사진으로 보기"></span></a>
+											{% endif %}
+										{% endif %}
+								</small>
+							</div>
+						</div>
+						<div class="post-body">
+							{{ post|render_post:user.is_superuser }}
+
+							{% if album_type == 'full' %}
+								{% for attachment in attachments %}
+									<div class="attached-picture-full">
+										<a class="lightbox-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.file.url }}"/></a>
+										{% if attachment.notes %}
+											<div class="comments">
+												{{ attachment.notes|markdown }}
+											</div>
+										{% endif %}
+									</div>
+								{% endfor %}
+							{% endif %}
+							{% if album_type == 'thumbnails' %}
+								<div class="attached-album">
+								{% for attachment in attachments %}
+									<div class="album-picture">
+										<a class="lightbox-caption-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.thumbnail.url }}" data-note-id="note{{ attachment.pk }}"/></a>
+										<span class="notes" id="note{{ attachment.pk }}">{% if attachment.notes %}{{ attachment.notes|markdown }}{% endif %}</span>
+									</div>
+								{% endfor %}
+								</div>
+							{% endif %}
+						</div>
+						{% with commentobject=post %}
+							{% include "comment_block.html" %}
+						{% endwith %}
+					</div>
+
+
+{% endblock %}

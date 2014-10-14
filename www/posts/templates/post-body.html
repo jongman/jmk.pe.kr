@@ -1,0 +1,13 @@
+{% load common_filters %}
+{% load staticfiles %}
+<div class="public-body">
+	{{ public }}
+</div>
+
+{% if private %}
+<div class="private-body">
+	<p><img src="{% static "incognito.png" %}"/></p>
+	{{ private }}
+</div>
+{% endif %}
+
