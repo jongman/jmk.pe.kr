@@ -76,53 +76,42 @@
 
 {% block tail %}
 	
-	<div id="picture-picker">
-		<table id="forgiveme">
-			<tr>
-				<td width="200px">
-					<div id="folders-pane" class="folders">
-						<h4>폴더</h4>
-						<ul class="folder-list">
-							<li class="folder-template"><a href="#" class="folder-link" data-folder="starred"><span class="glyphicon glyphicon-star-empty"></span> (Starred)</a></li>
-						</ul>
-					</div>
-				</td>
-				<td>
-					<div class="contents" id="contents-pane">
-						<h4><span id="folder_name">폴더 내용</span> <small><input type="checkbox" id="starred"/> Starred</small></h4>
-						<div class="folder-entry folder-entry-template">
-							<a class="lightbox-folder-link" href=""><img src="" data-pk=""/></a>
-							<a class="pick" href="#">
-								<span class="glyphicon glyphicon-ok"></span>
-							</a>
-						</div>
-						<div id="folder-contents">
-						</div>
-					</div>
-				</td>
-				<td width="180px">
-					<div class="picked-thumbnails">
-						<h4>선택된 사진들</h4>
-						<div id="picked-list">
-						</div>
-					</div>
-				</td>
-			</tr>
-			<tr height="40px">
-				<td colspan="3" class="buttons">
-					<input type="button" value="Choose" id="choose"/>
-					<input type="button" value="Cancel" id="cancel"/>
-				</td>
-			</tr>
-		</table>
-	</div>
+		{% include "gallery-root.html" %}
 
+		<script>
+
+			$(function() {
+			});
+		</script>
 	<script language="javascript" src="{% static "ajaxupload.js" %}"></script>
 	<script language="javascript" src="{% static "bootstrap-datepicker.js" %}"></script>
 	<script language="javascript" src="{% static "jquery-ui.min.js" %}"></script>
 	<script language="javascript">
 
+		function add_attachment(file_path, thumbnail_path, pk) {
+			var template = $(".attachment-template");
+			var cloned = template.clone();
+			cloned.removeClass("attachment-template");
+			cloned.find(".lightbox-link").attr("href", file_path);
+			cloned.find(".lightbox-link img").attr("src", thumbnail_path);
+			cloned.find(".remove-icon").click(function() { cloned.remove(); });
+			cloned.find(".pk").attr('title', pk);
+			$("#attachments").append(cloned);
+		}
+
+		function import_attachments(selected) {
+			for(var i = 0; i < selected.length; ++i) {
+				add_attachment(selected[i].file, selected[i].thumbnail, selected[i].pk);
+			}
+		}
+
 		var uploading = false;
+		var gallery_options = {
+			'list-images-endpoint': '{% url "list-attachment" %}',
+			'list-folders-endpoint': '{% url "list-attachment-folders" %}',
+			'set-image-state-endpoint': '{% url "set-attachment-state" %}',
+			'publish-callback': import_attachments
+		};
 
 		function summarize_attachments() {
 			var attachments = Array();
@@ -138,63 +127,9 @@
 			});
 			return JSON.stringify(attachments);
 		}
-		function load_folder(folder) {
-			$("#contents-pane").addClass("loading");
-			$("#folder_name").html(folder);
-			$("#folder-contents").html("");
-			$.getJSON("{% url "list-attachment" %}", {'folder': folder},
-				function(data) {
-					$("#contents-pane").removeClass("loading");
-					var template = $(".folder-entry-template");
-					for(var i = 0; i < data.length; ++i) {
-						var cloned = template.clone().removeClass("folder-entry-template");
-						cloned.find("a").attr("href", data[i].file);
-						cloned.find("img").attr("src", data[i].thumbnail).attr("data-pk", data[i].pk);
-						cloned.appendTo("#folder-contents");
-						{# $('<a class="lightbox-folder-link" href="' + data[i].file + '"><img src="' + data[i].thumbnail + '" data-pk="' + data[i].pk + '"/></a>').appendTo("#folder-contents"); #}
-					}
-					$(".lightbox-folder-link").imageLightbox({
-						animationSpeed: 0,
-						quitOnImgClick: true,
-						preloadNext: true,
-						{# onStart: open_overlay, #}
-						{# onEnd: close_overlay, #}
-					});
-					$(".pick").click(function() {
-						var cloned = $(this).parent().find('img').parent().clone();
-						console.log(cloned);
-						cloned.unbind('click');
-						cloned.click(function() { cloned.remove(); return false; });
-						cloned.appendTo("#picked-list");
-						return false;
-					});
-				});
-		}
-
-		function load_folder_list() {
-			$("#folders-pane").addClass("loading");
-			$.getJSON("{% url "list-attachment-folders" %}", function(data) {
-				if(data.length > 0) 
-					load_folder(data[0]);
-				$("#folders-pane").removeClass("loading");
-				$(".folder-list li").each(function() {
-					if(!$(this).hasClass('folder-template'))
-						$(this).remove();
-				});
-				var template = $(".folder-list li.folder-template");
-				for(var i = 0; i < data.length; ++i) {
-					var cloned = template.clone().removeClass("folder-template");
-					cloned.find("a").data("folder", data[i]).html(data[i]).click(function() { 
-						var folder = $(this).data('folder');
-						load_folder(folder);
-					});
-					cloned.appendTo(".folder-list");
-				}
-
-			});
-		}
 
 		$(function() {
+			$("#import-attachments").click(open_gallery);
 			$("#id_dated").datepicker({
 				format: 'yyyy-mm-dd',
 				todayHighlight: true,
@@ -240,17 +175,6 @@
 				$("#id_serialized_attachments").val(summarize_attachments());
 			});
 
-			function add_attachment(file_path, thumbnail_path, pk) {
-				var template = $(".attachment-template");
-				var cloned = template.clone();
-				cloned.removeClass("attachment-template");
-				cloned.find(".lightbox-link").attr("href", file_path);
-				cloned.find(".lightbox-link img").attr("src", thumbnail_path);
-				cloned.find(".remove-icon").click(function() { cloned.remove(); });
-				cloned.find(".pk").attr('title', pk);
-				$("#attachments").append(cloned);
-			}
-
 			new AjaxUpload("upload-attachment", {
 				action: "{% url "new-attachment" %}",
 				data: {
@@ -278,32 +202,6 @@
 						}
 					}
 				}
-			});
-
-			$("#import-attachments").click(function() {
-				$("#picture-picker").show('fast');
-				$("#picked-list").html('');
-				$("body").addClass("modal-open");
-				load_folder_list();
-
-			});
-
-			$(".folder-link").click(load_folder);
-
-			function close_picker() {
-				$("#picture-picker").hide('fast');
-				$("body").removeClass("modal-open");
-			}
-			$("#cancel").click(close_picker);
-			$("#choose").click(function() {
-				$("#picked-list a").each(function(index, elem) {
-					console.log($(elem));
-					var file = $(elem).attr("href");
-					var thumbnail = $(elem).find("img").attr("src");
-					var pk = $(elem).find("img").attr("data-pk");
-					add_attachment(file, thumbnail, pk);
-				});
-				close_picker();
 			});
 
 			window.onbeforeunload = function() {

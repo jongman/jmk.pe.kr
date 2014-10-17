@@ -14,6 +14,11 @@ from datetime import datetime
 from markdown import markdown
 from taggit.managers import TaggableManager
 
+HIDDEN, NORMAL, STARRED = range(3)
+ATTACHMENT_STATE_NAMES = {HIDDEN: u'숨김',
+                          NORMAL: u'',
+                          STARRED: u'별표'}
+
 PUBLIC, LOGGED_IN, FRIENDS, PRIVATE = range(4)
 PERMISSION_NAMES = {PUBLIC: 'Public',
                     LOGGED_IN: 'Only Logged In',
@@ -89,15 +94,16 @@ class Post(models.Model):
 
 class Attachment(models.Model):
     is_picture = models.BooleanField(default=False, db_index=True)
-    folder = models.CharField(max_length=256, db_index=True)
+    date = models.DateField(db_index=True)
     file = models.FileField()
     thumbnail = models.FileField()
-    starred = models.BooleanField(default=False)
+    state = models.IntegerField(default=NORMAL,
+                                choices=ATTACHMENT_STATE_NAMES.items())
     original_link = models.CharField(null=True, max_length=256, db_index=True)
 
     def __unicode__(self):
-        return '<Attachment: file=%s original_link=%s>' % (
-            self.file, self.original_link)
+        return '<Attachment: dated=%s file=%s original_link=%s>' % (
+            self.date, self.file, self.original_link)
 
 class AttachedPicture(models.Model):
     post = models.ForeignKey(Post)

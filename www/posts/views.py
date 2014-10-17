@@ -5,7 +5,7 @@ from django.core.files.storage import DefaultStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
-from django.db.models import Min, Max
+from django.db.models import Min, Max, Count
 import bcrypt
 from taggit.models import Tag
 from PIL import Image, ImageOps
@@ -57,6 +57,10 @@ def augment_context(request, ctx):
 
 def augmented_render(request, template_name, ctx):
     return render(request, template_name, augment_context(request, ctx))
+
+def gallery(request):
+    return augmented_render(request, "gallery.html", {});
+
 
 def timeline(request, category='', page=1):
     if category: 
@@ -334,17 +338,40 @@ def save_thumbnail(target_path, file):
 @superuser_only
 def list_attachment_folders(request):
     pics = Attachment.objects.filter(is_picture=True)
-    folders = pics.values('folder').distinct().order_by('-folder')
-    return HttpResponse(json.dumps([f['folder'] for f in folders]))
+    # not_hidden = pics.filter(state__gte=NORMAL)
+    with_extra = pics.extra(select={'y': 'extract(year from date)', 
+                                    'm': 'extract(month from date)'})
+    values = with_extra.values('y', 'm')
+    annotated = values.annotate(first=Min('pk'), cnt=Count('pk'))
+    response =  [{'folder': '%.4d-%.2d' % (entry['y'], entry['m']),
+                  'images': entry['cnt'],
+                  'thumbnail': Attachment.objects.get(pk=entry['first']).thumbnail.url}
+                 for entry in annotated]
+    response.sort(key=lambda e: e['folder'], reverse=True)
+
+    return HttpResponse(json.dumps(response))
+
+@superuser_only
+def set_attachment_state(request):
+    attachment = get_object_or_404(Attachment, id=int(request.GET.get('pk')))
+    state = int(request.GET.get('state'))
+    assert state in ATTACHMENT_STATE_NAMES
+    attachment.state = state
+    attachment.save()
+    return HttpResponse('ok')
+
 
 @superuser_only
 def list_attachment(request):
-    folder = request.GET.get('folder')
+    y, m = map(int, request.GET.get('folder').split('-'))
+
     pics = Attachment.objects.filter(is_picture=True)
-    pics = pics.filter(folder=folder).order_by('pk')
+    pics = pics.filter(date__year=y, date__month=m).order_by('date', 'pk')
+
     response = [{'pk': pic.pk,
                  'thumbnail': pic.thumbnail.url,
-                 'starred': pic.starred,
+                 'state': pic.state,
+                 'date': pic.date.strftime('%B %d, %Y').replace(' 0', ' '),
                  'file': pic.file.url}
                 for pic in pics]
     return HttpResponse(json.dumps(response))
@@ -372,12 +399,11 @@ def new_attachment(request):
         else:
             thumbnail_path = file_path
 
-        folder = date.today().strftime('%Y-%m') + '-uploaded'
+        dated = date.today()
         attachment = Attachment(is_picture=is_picture, 
-                                folder=folder,
+                                date=dated,
                                 file=file_path,
                                 thumbnail=thumbnail_path,
-                                starred=False,
                                 original_link=None)
         attachment.save()
 

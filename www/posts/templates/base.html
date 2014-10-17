@@ -88,7 +88,7 @@
 								<a href="{% url "write-journal" %}">NEW JOURNAL</a>
 							</li>
 							<li>
-								<a href="#" id="gallery-trigger">GALLERY</a>
+								<a href="{% url "gallery" %}" id="gallery-trigger">GALLERY</a>
 							</li>
 							{% endif %}
 						</ul>
@@ -135,6 +135,5 @@
 		<script src="{% static "gallery.js" %}"></script>
 		{% block tail %}
 		{% endblock %}
-		{% include "gallery.html" %}
   </body>
 </html>

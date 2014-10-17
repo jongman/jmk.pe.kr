@@ -80,10 +80,5 @@ $(function() {
 		onLoadEnd: open_caption
 	});
 
-	$("#gallery-trigger").click(function() {
-		open_gallery(); 
-		return false;
-	});
-
 
 });

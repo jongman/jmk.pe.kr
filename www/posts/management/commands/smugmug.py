@@ -8,6 +8,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from posts.models import Attachment
+from datetime import date
 
 API_VERSION='1.2.2'
 API_URL='https://secure.smugmug.com/services/api/json/1.2.2/'
@@ -140,11 +141,9 @@ class API(object):
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--earliest', default=None, help='YYYY-MM-DD'),
+        make_option('--latest', default=None, help='YYYY-MM-DD'),
         make_option('--full', default=False, action='store_true', dest='full'))
     help = 'Pull Attachments from Smugmug'
-
-    def add_arguments(self, parser):
-        parser.add_argument('--earliest', default=None)
 
     def sync_album(self, album_info):
         print 'Syncing album %s ..' % album_info
@@ -153,9 +152,8 @@ class Command(BaseCommand):
 
         updated = False
 
-        y, m, d = album_info['Title'].split('-')
-        folder_name = '-'.join((y, m, 'smugmug'))
-        existing = Attachment.objects.filter(folder=folder_name)
+        dated = date(*map(int, album_info['Title'].split('-')))
+        existing = Attachment.objects.filter(date=dated)
         synced_urls = set(e.original_link for e in existing)
         for image in images:
             if image['URL'] in synced_urls: continue
@@ -172,16 +170,18 @@ class Command(BaseCommand):
                           path.join(settings.MEDIA_ROOT, thumb_path))
 
             attachment = Attachment(is_picture=True, 
-                                    folder=folder_name,
+                                    date=dated,
                                     file=file_path,
                                     thumbnail=thumb_path,
-                                    starred=False,
                                     original_link=image['URL'])
             attachment.save()
             updated = True
         return updated
 
     def download(self, url, target):
+        if path.exists(target):
+            print 'target path', target, 'already exists'
+            return
         dir = path.dirname(target)
         if not path.exists(dir):
             makedirs(dir)
@@ -205,6 +205,7 @@ class Command(BaseCommand):
                     for album in albums 
                     if album.get('Category', {}).get('Name') == settings.SMUGMUG_SYNC_CATEGORY and
                     (options['earliest'] == None or album['Title'] >= options['earliest']) and
+                    (options['latest'] == None or album['Title'] <= options['latest']) and
                     YYYYMMDD.match(album['Title'])]
         if not options['full']:
             filtered = filtered[:10]

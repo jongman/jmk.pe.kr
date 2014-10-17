@@ -40,8 +40,12 @@ urlpatterns = patterns(
         name='delete-comment'),
     url(r'^categories/$', views.categories, name='categories'),
 
+    url(r'^gallery/$', views.gallery, name='gallery'),
+
     url(r'^new-attachment/$', views.new_attachment, name='new-attachment'),
     url(r'^list-attachment-folders/$', views.list_attachment_folders, name='list-attachment-folders'),
     url(r'^list-attachment/$', views.list_attachment, name='list-attachment'),
+    url(r'^set-attachment-state/$', views.set_attachment_state,
+        name='set-attachment-state'),
 
 )
