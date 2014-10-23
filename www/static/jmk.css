@@ -162,10 +162,12 @@ ul.main-menu ul.nested-menu {
 	margin: 0;
 	padding: 0;
 	margin-left: 8px;
+	margin-right: 0px; 
 	font-size: 80%;
 }
 @media (max-width: 991px) {
 	ul.main-menu {
+		letter-spacing: 0px;
 		margin-bottom: 0;
 	}
 	ul.main-menu li {

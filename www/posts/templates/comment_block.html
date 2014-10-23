@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% load common_filters %}
 						<hr/>
 						{% if comments_count > 0 %}
@@ -42,7 +43,7 @@
 									</li>
 									<li class="nested-comment-form" id="replyform{{ comment.pk }}">
 										<div id="comment_form">
-											<form method="post" action="{% url "post-comment" %}">
+											<form class="comment" method="post" action="{% url "post-comment" %}">
 												<input type="hidden" value="{{ post.pk }}" name="post"/>
 												<input type="hidden" value="{{ comment.pk }}" name="parent"/>
 												{% csrf_token %}
@@ -51,9 +52,10 @@
 														{% if user.is_authenticated %}
 															<b>{{ user.username }}</b>
 														{% else %}
+															<script src="{% static "md5.min.js" %}"></script>
 															<input type="text" name="name" placeholder="이름"/>
 															<input type="password" name="password" placeholder="비밀번호"/>
-															<b>보안 질문</b> 무궁화 <input type="text" name="question" placeholder="채워주세요"/> 화려강산
+															<b>보안 질문</b> 무궁화 <input class="question" type="text" name="question" placeholder="채워주세요"/> 화려강산
 														{% endif %}
 													</li>
 													<li class="comment-body">
@@ -76,7 +78,7 @@
 							<ul class="comments">
 								<li>
 									<div id="comment_form">
-										<form method="post" action="{% url "post-comment" %}">
+										<form class="comment" method="post" action="{% url "post-comment" %}">
 											<input type="hidden" value="{{ post.pk }}" name="post"/>
 											<input type="hidden" value="" name="parent"/>
 											{% csrf_token %}
@@ -87,7 +89,7 @@
 													{% else %}
 														<input type="text" name="name" placeholder="이름"/>
 														<input type="password" name="password" placeholder="비밀번호"/>
-														<b>보안 질문</b> 무궁화 <input type="text" name="question" placeholder="채워주세요"/> 화려강산
+														<b>보안 질문</b> 무궁화 <input class="question" type="text" name="question" placeholder="채워주세요"/> 화려강산
 													{% endif %}
 												</li>
 												<li class="comment-body">

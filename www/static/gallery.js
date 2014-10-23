@@ -109,6 +109,17 @@ function attach_events() {
 	// scroll
 	bind("#gallery-root .contents", "scroll", check_progressive_load);
 
+	// swipe
+	$("#gallery-root .contents .full").touchwipe({
+		wipeLeft: next_image,
+		wipeRight: prev_image,
+		wipeUp: hide_image_full,
+		wipeDown: star_image_full,
+		min_move_x: 20,
+		min_move_y: 20,
+		preventDefaultEvents: true
+	}).mouseup(show_entries_list);
+
 	// load folder
 	bind("select#folders", "change", function() { load_folder($(this).val()); });
 

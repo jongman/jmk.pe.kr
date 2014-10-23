@@ -80,5 +80,22 @@ $(function() {
 		onLoadEnd: open_caption
 	});
 
-
+	$("form.comment").submit(function() {
+		var q = $(this).find(".question");
+		if(q.length > 0) {
+			if(md5(q.val()) != "aa1391d770cab1e46fdf2da79e0e0966") {
+				alert("보안 질문의 답이 틀렸습니다.");
+				return false;
+			}
+		}
+		var valid = true;
+		$(this).find("input[type=text], input[type=password], textarea").each(function() {
+			if(valid && $(this).val() == "") {
+				alert("입력 폼을 모두 채워 주세요.");
+				valid = false;
+			}
+		});
+			
+		return valid;
+	});
 });

@@ -6,6 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
 from django.db.models import Min, Max, Count
+from django.conf import settings
 import bcrypt
 from taggit.models import Tag
 from PIL import Image, ImageOps
@@ -260,7 +261,7 @@ def delete(request, id):
 
 def post_comment(request):
     if not request.user.is_authenticated():
-        if (request.POST['question'] != u'삼천리' or
+        if (request.POST['question'] != settings.SECURITY_ANSWER or
             not request.POST['name'] or 
             not request.POST['password']):
             return HttpResponseForbidden()
