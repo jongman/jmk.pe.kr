@@ -113,7 +113,7 @@ class InvalidVarException(object):
 TEMPLATE_DEBUG=True
 TEMPLATE_STRING_IF_INVALID = InvalidVarException()
 
-from local_settings import SMUGMUG_USERID, SMUGMUG_PASSWORD, SMUGMUG_APIKEY, SECURITY_ANSWER
 SMUGMUG_SIZE = 'X3Large'
 SMUGMUG_SYNC_CATEGORY = 'Archive'
 
+from local_settings import *
