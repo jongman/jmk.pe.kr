@@ -8,7 +8,7 @@ from django.core.files.storage import DefaultStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
-from django.db.models import Min, Max, Count
+from django.db.models import Min, Max, Count, Q
 from django.conf import settings
 import bcrypt
 from json import dumps
@@ -29,6 +29,7 @@ from collections import defaultdict
 import calendar as cal
 
 TIMELINE_PPP = 30
+SEARCH_PPP = 100 
 LIST_PPP = 500
 THUMBNAIL_SIZE = 150
 
@@ -82,6 +83,22 @@ def timeline(request, category='', page=1):
 
     return augmented_render(request, 'timeline.html', 
                             {'category': category,
+                             'pagination': pagination})
+
+def search(request, page=1):
+    perm = determine_permission_level(request.user)
+    posts = Post.objects.filter(permission__lte=perm)
+    query = request.GET.get('query', u'꺅구라대신')
+    criteria = Q(body_public__contains=query) | Q(title__contains=query)
+    if perm == PRIVATE:
+        criteria = criteria | Q(body_private__contains=query)
+    posts = posts.filter(criteria)
+    posts = posts.order_by('-timestamp')
+
+    pagination = setup_paginator(posts, SEARCH_PPP, page, 'search', {},
+                                 {'query': query}) 
+    return augmented_render(request, 'search.html', 
+                            {'query': query,
                              'pagination': pagination})
 
 def calendar(request, category='', year='', month=''):

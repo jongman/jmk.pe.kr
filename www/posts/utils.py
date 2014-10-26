@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from random import choice
+import urllib
 
 def get_security_question():
     return choice(settings.SECURITY_QUESTIONS)

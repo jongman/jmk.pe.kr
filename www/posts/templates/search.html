@@ -4,31 +4,11 @@
 					<div class="blogview">
 						<div class="section">
 							<h2 class="content-header">
-								타임라인{% if category %}: {{ category }}{% endif %}
+								검색: {{ query }}
 
 								{# <small> #}
 								{# 	({{ pagination.paginator.count }}개) #}
 								{# </small> #}
-								<span class="pull-right">
-									<small class="dates">
-										{% if category %}
-											<a href="{% url "list" category=category %}">
-												<span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span>
-											</a>
-											<a href="{% url "calendar" category=category %}">
-												<span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span>
-											</a>
-
-										{% else %}
-											<a href="{% url "list" %}">
-												<span class="glyphicon glyphicon-list-alt" title="리스트로 보기"></span>
-											</a>
-											<a href="{% url "calendar" %}">
-												<span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span>
-											</a>
-										{% endif %}
-									</small>
-								</span>
 							</h2>
 						</div>
 						{% for post in pagination.page.object_list %}
