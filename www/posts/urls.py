@@ -48,4 +48,8 @@ urlpatterns = patterns(
     url(r'^set-attachment-state/$', views.set_attachment_state,
         name='set-attachment-state'),
 
+    url(r'^login/$', views.login, name='login'),
+    url(r'^signup/$', views.signup, name='signup'),
+    url(r'^logout/$', views.logout, name='logout'),
+
 )

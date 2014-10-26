@@ -34,8 +34,8 @@
 						{% for post in pagination.page.object_list %}
 						<div class="blogentry">
 							<div class="title">
-								<h3>
-									<span class="glyphicon glyphicon-list-alt"></span>
+								<h4>
+									{# <span class="glyphicon glyphicon-list-alt"></span> #}
 									<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
 									<div class="pull-right visible-md-block visible-lg-block">
 										<small class="dates">
@@ -53,7 +53,7 @@
 											{% endif %}
 										</small>
 									</div>
-								</h3>
+								</h4>
 							</div>
 							<div class="post-body">
 								{{ post|render_post_excerpt }}

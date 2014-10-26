@@ -2,11 +2,15 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from random import choice
+
+def get_security_question():
+    return choice(settings.SECURITY_QUESTIONS)
 
 def get_query(params):
     if not params: return ""
-    return "?" + "&".join(["%s=%s" % (key,
-                                      urllib.quote(val.encode("utf-8")))
+    return "?" + "&".join(["%s=%s" % (key, urllib.quote(val.encode("utf-8")))
                            for key, val in params.iteritems()])
 
 class CalendarPaginator(object):

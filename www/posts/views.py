@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import Group, User
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as login_user
+from django.contrib.auth import logout as logout_user
 from django.core.files.storage import DefaultStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import RequestContext
@@ -17,7 +20,8 @@ import os
 from cStringIO import StringIO
 from models import *
 from forms import *
-from utils import setup_paginator, get_client_ip, CalendarPaginator
+from utils import (setup_paginator, get_client_ip, CalendarPaginator,
+                   get_security_question)
 
 from datetime import date, datetime, timedelta
 from collections import defaultdict
@@ -46,7 +50,7 @@ def determine_permission_level(user):
     if user.is_superuser:
         return PRIVATE
     friends, _ = Group.objects.get_or_create(name='Friends')
-    if friends in user.groups:
+    if friends in user.groups.all():
         return FRIENDS
     return LOGGED_IN
 
@@ -173,6 +177,9 @@ def get_comments(post):
     return comments
 
 def read(request, slug, album_type=''):
+    question = get_security_question()
+    request.session['expected'] = question['answer']
+
     post = get_object_or_404(Post, slug=slug)
     if post.permission > determine_permission_level(request.user):
         return HttpResponseForbidden()
@@ -182,6 +189,7 @@ def read(request, slug, album_type=''):
 
     return augmented_render(request, 'read.html', 
                             {'post': post, 
+                             'question': question,
                              'attachments': attached,
                              'comments': comments, 
                              'album_type': album_type,
@@ -261,7 +269,7 @@ def delete(request, id):
 
 def post_comment(request):
     if not request.user.is_authenticated():
-        if (request.POST['question'] != settings.SECURITY_ANSWER or
+        if (request.POST['security'] != request.session['expected'] or
             not request.POST['name'] or 
             not request.POST['password']):
             return HttpResponseForbidden()
@@ -417,3 +425,47 @@ def new_attachment(request):
                }
     return HttpResponse(json.dumps(go()))
 
+def signup(request):
+    security_error = False
+    if request.method == 'POST':
+        if request.POST['security'] != request.session['expected']:
+            security_error = True
+        form = SignUpForm(data=request.POST or None)
+        if not security_error and form.is_valid():
+            data = form.cleaned_data
+            user = User.objects.create_user(username=data['username'],
+                                            password=data['password'],
+                                            email=data['email'])
+            user.is_active = True
+            user.save()
+            user = authenticate(username=data['username'],
+                                password=data['password'])
+            login_user(request, user)
+            return redirect('/')
+
+    else:
+        form = SignUpForm()
+    question = get_security_question()
+    request.session['expected'] = question['answer']
+    return augmented_render(request, 'account/signup.html',
+                            {'form': form, 
+                             'security_error': security_error,
+                             'question': question})
+
+def login(request):
+    error = username = u''
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login_user(request, user)
+            return redirect('/')
+        else:
+            error = u'잘못된 사용자 혹은 비밀번호입니다.'
+    return augmented_render(request, 'account/login.html',
+                            {'username': username, 'error': error})
+
+def logout(request):
+    logout_user(request)
+    return redirect('/')

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block contents %}
+	<div class="loginform">
+		<h2 class="content-header">로그인</h2> 
+		<form method="post" id="form" class="form-horizontal" role="form">
+			{% csrf_token %}
+			{% if error %}
+				<div class="row mesg">
+					<div class="col-sm-2">
+					</div>
+					<div class="col-sm-10">
+						<b>
+						{{ error }}
+					</b>
+					</div>
+				</div>
+			{% endif %}
+			<div class="row form-group">
+				<label class="col-sm-2 control-label">사용자</label>
+				<div class="col-sm-10">
+					<input type="text" name="username" id="id_username" value="{{ username }}"/>
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-sm-2 control-label">비밀번호</label>
+				<div class="col-sm-10">
+					<input type="password" name="password" id="id_password"/>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-10">
+					<input type="submit" value="로그인"/>
+				</div>
+			</div>
+		</form>
+	</div>
+
+									
+
+{% endblock %}
+
+{% block tail %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#id_username').focus();
+        });
+    </script>
+{% endblock %}

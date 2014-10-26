@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
+from django.conf import settings
 from markdown import markdown as render_md
 
 register = template.Library()
@@ -16,3 +18,16 @@ def render_post(post, full):
 @register.filter
 def markdown(text):
     return mark_safe(render_md(text))
+
+@register.filter
+def render_security_question(question):
+    fragments = []
+    if 'before' in question: 
+        fragments.append(question['before'])
+    fragments.append((ur"<input type='text' class='security' data-md5='%s'"
+                      "placeholder='%s' name='security'/>") %
+                     (question['md5'], 
+                      question.get('placeholder', u'채워주세요')))
+    if 'after' in question: 
+        fragments.append(question['after'])
+    return mark_safe(u' '.join(fragments))

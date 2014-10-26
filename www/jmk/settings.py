@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+ADMIN_EMAIL = 'jongman@gmail.com'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -117,3 +118,8 @@ SMUGMUG_SIZE = 'X3Large'
 SMUGMUG_SYNC_CATEGORY = 'Archive'
 
 from local_settings import *
+from hashlib import md5
+
+for q in SECURITY_QUESTIONS:
+    q['md5'] = md5(q['answer'].encode('utf-8')).hexdigest()
+

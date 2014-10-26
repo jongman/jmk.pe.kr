@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load common_filters %}
+
+{% block contents %}
+	<div class="signupform">
+		<h2 class="content-header">회원가입</h2> 
+		<form method="post" id="form" class="form-horizontal" role="form">
+			<div class="row mesg">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-10">
+					로그인한 사람만 볼 수 있는 글들도 (가끔) 있으니, 자주 오시면 회원 가입을 해 주세요.
+				</div>
+			</div>
+			{% csrf_token %}
+			{% if form.non_field_errors %}
+				{{ form.non_field_errors }}
+			{% endif %}
+			{% for field in form.visible_fields %}
+				<div class="row form-group {% if field.errors %}has-error{% endif %}">
+					<label class="col-sm-2 control-label">{{ field.label_tag }}</label>
+					<div class="col-sm-10">
+						{{ field }}
+						{% for error in field.errors %}
+							<span class="help-block">{{ error }}</span>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+				<div class="row form-group {% if security_error %}has-error{% endif %}">
+					<label class="col-sm-2 control-label">보안 질문:</label>
+					<div class="col-sm-10">
+						{{ question|render_security_question }}
+						{% if security_error %}
+							<span class="help-block">보안 질문이 틀렸습니다.</span>
+						{% endif %}
+					</div>
+				</div>
+			<div class="row">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-10">
+					<input type="submit" value="회원 가입"/>
+				</div>
+			</div>
+		</form>
+	</div>
+
+{% endblock %}
+
+{% block tail %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#id_username').focus();
+        });
+    </script>
+{% endblock %}
+{# {% extends "site_base.html" %} #}
+{#  #}
+{# {% load url from future %} #}
+{# {% load i18n %} #}
+{# {% load bootstrap %} #}
+{#  #}
+{# {% block head_title %}{% trans "Sign up" %}{% endblock %} #}
+{#  #}
+{# {% block body %} #}
+{#     <div class="row"> #}
+{#         <div class="col-md-4"> #}
+{#             <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}> #}
+{#                 <legend>{% trans "Sign up" %}</legend> #}
+{#                 {% csrf_token %} #}
+{#                 {{ form|bootstrap }} #}
+{#                 {% if redirect_field_value %} #}
+{#                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> #}
+{#                 {% endif %} #}
+{#                 <button type="submit" class="btn btn-primary">{% trans "Sign up" %}</button> #}
+{#             </form> #}
+{#         </div> #}
+{#         <div class="col-md-4"> #}
+{#             {% include "account/_signup_sidebar.html" %} #}
+{#         </div> #}
+{#     </div> #}
+{# {% endblock %} #}
+{#  #}
+{# {% block extra_script %} #}
+{#     <script type="text/javascript"> #}
+{#         $(document).ready(function() { #}
+{#             $('#id_username').focus(); #}
+{#         }); #}
+{#     </script> #}
+{# {% endblock %} #}

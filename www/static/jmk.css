@@ -10,6 +10,9 @@ body, h1, h2, h3 {
 	padding-top: 10px;
 
 }
+h4 {
+	font-size: 15pt;
+}
 a {
 	color: #933;
 	/* text-decoration: underline; */
@@ -25,12 +28,12 @@ textarea, input, select {
 	border-radius: 3px;
 }
 
-select, textarea, input[type=text], input[type=password] {
+select, textarea, input[type=text], input[type=password], input[type=email] {
 	border: 1px solid #ccc;
 	background-color: #eee;
 }
 
-textarea, input[type=text], input[type=password] {
+textarea, input[type=text], input[type=password], input[type=email] {
 	box-shadow: inset 0 0 4px #aaa;
 	padding: 8px;
 }
@@ -86,6 +89,10 @@ input[type=button], input[type=submit] {
 	/* background-color: #eee; */
 	/* opacity: 0.85; */
 	/* background-color: rgba(255, 0, 0, 0.8); */
+}
+
+.glyphicon-user {
+	color: #999;
 }
 
 /* main column always spans the height of the distance */
@@ -354,6 +361,10 @@ div.private-body {
 	background-color: #eee;
 	min-height: 80px;
 	padding: 16px;
+}
+
+form .mesg {
+	margin-bottom: 16px;
 }
 
 /* post forms */

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block contents %}
+	<div class="logoutform">
+		<h2 class="content-header">로그아웃</h2> 
+		<form method="post" id="form" class="form-horizontal" role="form">
+			{% csrf_token %}
+			{% if form.non_field_errors %}
+				{{ form.non_field_errors }}
+			{% endif %}
+			<div class="row mesg">
+				<div class="col-sm-12">정말 로그아웃하시겠습니까?</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<input type="submit" value="로그아웃"/>
+					<a href="javascript:history.back();">돌아가기</a>
+				</div>
+			</div>
+		</form>
+	</div>
+
+{% endblock %}
+
+
