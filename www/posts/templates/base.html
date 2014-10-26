@@ -61,7 +61,9 @@
 							<!-- 	<a href="#">TRACKER</a> -->
 							<!-- </li> -->
 							<li>
-								<input type="text" class="search" placeholder="SEARCH">
+								<form method="GET" action="{% url "search" %}">
+									<input name="query" type="text" class="search" placeholder="SEARCH">
+								</form>
 							</li>
 						</ul>
 						<ul class="main-menu">
