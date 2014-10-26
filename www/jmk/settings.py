@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'djcelery_email',
 
     'taggit',
 
@@ -123,3 +124,4 @@ from hashlib import md5
 for q in SECURITY_QUESTIONS:
     q['md5'] = md5(q['answer'].encode('utf-8')).hexdigest()
 
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
