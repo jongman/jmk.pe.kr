@@ -11,6 +11,7 @@ from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequ
 from django.db.models import Min, Max, Count
 from django.conf import settings
 import bcrypt
+from json import dumps
 from taggit.models import Tag
 from PIL import Image, ImageOps
 
@@ -196,6 +197,11 @@ def read(request, slug, album_type=''):
                              'comments_count': len(comments)})
 
 @superuser_only
+def write_album(request):
+    pics = map(int, request.GET.get('pics', '').split(','))
+    return write(request, start_with=pics)
+
+@superuser_only
 def write_journal(request, year='', month='', day=''):
     if not year:
         dt = date.today()
@@ -206,7 +212,7 @@ def write_journal(request, year='', month='', day=''):
     return write(request, date=dt)
 
 @superuser_only
-def write(request, id=None, date=None):
+def write(request, id=None, date=None, start_with=None):
     action = u'New Post'
     attachments = []
     if id:
@@ -251,11 +257,20 @@ def write(request, id=None, date=None):
     else:
         attached = []
 
+    if start_with:
+        start_with = [Attachment.objects.get(pk=pk) for pk in start_with]
+        start_with = [{'pk': att.pk, 
+                       'thumbnail': att.thumbnail.url,
+                       'file': att.file.url} for att in start_with]
+    else:
+        start_with = []
+
     tags = Tag.objects.all()
 
     return augmented_render(request, 'write.html', 
                             {'form': form, 'action': action, 'tags': tags,
-                             'attachments': attached})
+                             'attachments': attached, 
+                             'start_with': dumps(start_with)})
 
 
 @superuser_only

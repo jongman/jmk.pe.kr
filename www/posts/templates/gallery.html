@@ -12,7 +12,16 @@
 				'list-folders-endpoint': '{% url "list-attachment-folders" %}',
 				'set-image-state-endpoint': '{% url "set-attachment-state" %}',
 				'publish-callback': function(selected) {
-					console.log(selected);
+					console.log('selected', selected);
+
+					var pks = new Array();
+					for(var i = 0; i < selected.length; ++i) {
+						pks.push(selected[i].pk);
+					}
+
+					var url = '{% url 'post-album' %}?pics=' + pks.join(',');
+					console.log(url);
+					document.location = url;
 				}
 			};
 

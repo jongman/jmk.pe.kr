@@ -30,7 +30,6 @@ function cleanup() {
 }
 
 function check_shortcuts(e) {
-	console.log('check_shortcuts', e);
 	if(current_mode == "folders") {
 		if(e.keyCode == 27) {
 			close_gallery();
@@ -181,7 +180,6 @@ function is_visible(state) {
 function scale_size(image_width, image_height, content_width, content_height) {
 	var width_over = image_width / content_width;
 	var height_over = image_height / content_height;
-	console.log("image", image_width, image_height, "content", content_width, content_height);
 	if(image_width <= content_width && image_height <= content_height)
 		return {'width': image_width, 'height': image_height};
 	// if(image_width / content_width <= image_height / content_height) 
@@ -331,7 +329,6 @@ function display_folder_entries() {
 		if(!is_visible(entry.state)) continue;
 
 		if(entry.date != last_date_displayed) {
-			console.log(entry.date);
 			last_date_displayed = entry.date;
 			date_template.clone().removeClass("date-template").html(last_date_displayed).appendTo(body);
 		}
@@ -400,7 +397,6 @@ function load_folder_list() {
 	show_folder_list();
 
 	$.getJSON(gallery_options['list-folders-endpoint'], function(data) {
-		console.log(data);
 		hide_loading_indicator(folders);
 
 		var template = $(".folder-template");
@@ -518,7 +514,6 @@ function pick_image_full() {
 }
 
 function pick_image_impl(pk, entry) {
-	console.log("pick?", pk, entry);
 	if(search_selected(pk) != -1) return;
 	show_selected();
 	selected.push(entry);

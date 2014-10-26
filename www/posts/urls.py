@@ -28,6 +28,7 @@ urlpatterns = patterns(
 
     url(r'^write/$', views.write, name='post-write'),
     url(r'^write/(?P<id>\d+)$', views.write, name='post-write'),
+    url(r'^write/album/$', views.write_album, name='post-album'),
     url(r'^write/journal//?$',
         views.write_journal, name='write-journal'),
     url(r'^write/journal/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/?$',

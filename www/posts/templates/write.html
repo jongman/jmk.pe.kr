@@ -207,6 +207,8 @@
 			window.onbeforeunload = function() {
 				return "정말 나가시겠어요?";
 			}
+
+			import_attachments({{ start_with|safe }});
 		});
 	</script>
 
