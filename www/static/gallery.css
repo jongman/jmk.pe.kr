@@ -73,15 +73,16 @@
 
 #gallery-root .contents {
 	position: absolute;
-	height: 100%;
 	width: 100%;
 	top: 0;
+	bottom: 0;
 	left: 0;
 
 	padding: 0;
 	overflow-y: scroll;
 	/* background-color: blue; */
 }
+
 #gallery-root .contents .folders {
 	padding: 8px;
 	z-index: 8100;

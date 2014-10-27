@@ -482,13 +482,11 @@ function adjust_size() {
 
 function hide_selected() {
 	$(".selected-pictures").fadeOut('fast').animate({'height': '0px'}, 'fast', resize_current_image);
-	$(".folders").css({"padding-bottom": "0px"});
-	$(".entries").css({"padding-bottom": "0px"});
+	$(".contents").animate({"bottom": "0px"}, 'fast');
 }
 function show_selected() {
 	$(".selected-pictures").fadeIn('fast').animate({'height': '130px'}, 'fast', resize_current_image);
-	$(".folders").css({"padding-bottom": "130px"});
-	$(".entries").css({"padding-bottom": "130px"});
+	$(".contents").animate({"bottom": "130px"}, 'fast');
 }
 
 function search_selected(pk) {
