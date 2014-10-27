@@ -169,8 +169,10 @@ class Command(BaseCommand):
             self.download(image['ThumbURL'], 
                           path.join(settings.MEDIA_ROOT, thumb_path))
 
+            timestamp = datetime.strptime(image['Date'], '%Y-%m-%d %H:%M:%S')
             attachment = Attachment(is_picture=True, 
                                     date=dated,
+                                    timestamp=timestamp,
                                     file=file_path,
                                     thumbnail=thumb_path,
                                     original_link=image['URL'])

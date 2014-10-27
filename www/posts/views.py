@@ -441,8 +441,10 @@ def new_attachment(request):
             thumbnail_path = file_path
 
         dated = date.today()
+        now = datetime.now()
         attachment = Attachment(is_picture=is_picture, 
                                 date=dated,
+                                timestamp=now,
                                 file=file_path,
                                 thumbnail=thumbnail_path,
                                 original_link=None)

@@ -9,7 +9,6 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.template.loader import get_template
 from django.template import Context
-from jsonfield import JSONField
 from datetime import datetime
 from markdown import markdown
 from taggit.managers import TaggableManager
@@ -95,6 +94,7 @@ class Post(models.Model):
 class Attachment(models.Model):
     is_picture = models.BooleanField(default=False, db_index=True)
     date = models.DateField(db_index=True)
+    timestamp = models.DateTimeField()
     file = models.FileField()
     thumbnail = models.FileField()
     state = models.IntegerField(default=NORMAL,
