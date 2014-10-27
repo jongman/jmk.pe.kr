@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.mail import send_mail
 from models import Comment
+from django.template.loader import get_template
+from django.template import Context
 # from celery import shared_task, Celery
 # 
 # send_mail_task = shared_task(send_mail)
@@ -27,11 +29,10 @@ def new_comment(sender, **kwargs):
     instance = kwargs.get('instance')
     if instance.parent and instance.parent.author:
         recipients.add(instance.parent.author.email)
-    url = instance.post.get_absolute_url().encode('utf-8')
-    cmt = instance.comment.encode('utf-8')
-    send_mail('JMK: New Comment On "%s" by %s' % (instance.post.title.encode('utf-8'),
-                                                  instance.name.encode('utf-8')),
-                    '\n'.join(['Link: http://jmk.pe.kr%s#c%d' % (url, instance.pk),
-                               '', cmt]),
-                    settings.ADMIN_EMAIL,
-                    recipients)
+
+    email_template = get_template('comment-email.txt')
+    body = email_template.render(Context({'comment': instance}))
+    subject = 'JMK: New Comment On "%s" by %s' % (instance.post.title,
+                                                  instance.name)
+    send_mail(subject.encode('utf-8'), body.encode('utf-8'),
+              settings.ADMIN_EMAIL, recipients)

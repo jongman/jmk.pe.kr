@@ -1,0 +1,18 @@
+{% spaceless %}
+{% if comment.parent %}
+jmk.pe.kr의 "{{ comment.post.title }}"에 남기신 댓글에 {{ comment.name }}님이 댓글을 남기셨습니다.
+{% else %}
+jmk.pe.kr의 "{{ comment.post.title }}"에 {{ comment.name }}님이 댓글을 남기셨습니다.
+{% endif %}
+{% endspaceless %}
+
+---
+
+본문:
+
+{{ comment.comment }}
+
+---
+
+홈페이지에서 보기: http://jmk.pe.kr{{ comment.post.get_absolute_url }}#c{{ comment.pk }}
+
