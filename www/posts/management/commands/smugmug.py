@@ -8,7 +8,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from posts.models import Attachment
-from datetime import date
+from datetime import date, datetime
 
 API_VERSION='1.2.2'
 API_URL='https://secure.smugmug.com/services/api/json/1.2.2/'
