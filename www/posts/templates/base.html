@@ -18,8 +18,10 @@
     <![endif]-->
 
 		<link href="{% static "jmk.css" %}" rel="stylesheet">
+		<link href="{% static "pygments.css" %}" rel="stylesheet">
 		<link href="{% static "gallery.css" %}" rel="stylesheet">
 		<link href="{% static "datepicker.css" %}" rel="stylesheet">
+		<link href="{% static "katex.min.css" %}" rel="stylesheet">
   </head>
   <body>
 		<div class="margin-top visible-md-block visible-lg-block">
@@ -140,6 +142,7 @@
 		<script src="{% static "jmk.js" %}"></script>
 		<script src="{% static "gallery.js" %}"></script>
 		<script src="{% static "md5.min.js" %}"></script>
+		<script src="{% static "katex.min.js" %}"></script>
 		{% block tail %}
 		{% endblock %}
   </body>

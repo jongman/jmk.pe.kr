@@ -4,7 +4,12 @@ from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from random import choice
+from markdown import markdown
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import guess_lexer, get_lexer_by_name
 import urllib
+import re
 
 def get_security_question():
     return choice(settings.SECURITY_QUESTIONS)
@@ -98,3 +103,35 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+def apply_pygments(str):
+    lines = str.splitlines()
+    str = '\n'.join(lines[1:-1])
+    first = lines[0].strip().lstrip('`')
+    if first:
+        lexer = get_lexer_by_name(first)
+    else:
+        lexer = guess_lexer(str)
+    formatter = HtmlFormatter(style='colorful')
+    return highlight(str, lexer, formatter)
+
+def highlight_source_code(text):
+    return re.sub('^```.*?\n.+?^```$', lambda match: apply_pygments(match.group(0)),
+                  text, flags=re.DOTALL|re.MULTILINE)
+
+def prepare_katex(str):
+    return ''.join(['<span class="katex-inline">',
+                    str.strip('$'),
+                    '</span>'])
+
+def process_katex(text):
+    # replace escaped dollar signs
+    text = text.replace(r'\$', '&#36;')
+    return re.sub(ur'\$[^\$가-힣]+\$', lambda match: prepare_katex(match.group(0)), text)
+
+def render_text(text):
+    # simulate Github-Flavored Markdown
+    text = highlight_source_code(text)
+    # prepare text for Katex rendering
+    text = process_katex(text)
+    return markdown(text)

@@ -10,25 +10,26 @@ from django.utils.safestring import mark_safe
 from django.template.loader import get_template
 from django.template import Context
 from datetime import datetime
-from markdown import markdown
 from taggit.managers import TaggableManager
+from utils import render_text
 
 HIDDEN, NORMAL, STARRED = range(3)
 ATTACHMENT_STATE_NAMES = {HIDDEN: u'숨김',
                           NORMAL: u'',
                           STARRED: u'별표'}
 
-PUBLIC, LOGGED_IN, FRIENDS, PRIVATE = range(4)
+PUBLIC, LOGGED_IN, FRIENDS, SIGNIFICANT_OTHER, PRIVATE = range(5)
 PERMISSION_NAMES = {PUBLIC: 'Public',
                     LOGGED_IN: 'Only Logged In',
                     FRIENDS: 'Friends',
+                    SIGNIFICANT_OTHER: 'Significant Other',
                     PRIVATE: 'Private'}
 
 ALBUM_TYPE = {'full': u'크게 보기',
               'thumbnails': u'썸네일 보기'}
 
 class Post(models.Model):
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField()
     dated = models.DateField(u'날짜')
     permission = models.IntegerField(u'공개', choices=PERMISSION_NAMES.items(),
                                     default=PUBLIC)
@@ -75,12 +76,12 @@ class Post(models.Model):
         else:
             to_render = public
 
-        return markdown(to_render)
+        return render_text(to_render)
 
     def render(self, is_superuser):
-        public = mark_safe(markdown(self.body_public.replace('[[more]]', '')))
+        public = mark_safe(render_text(self.body_public.replace('[[more]]', '')))
         if is_superuser:
-            private = mark_safe(markdown(self.body_private))
+            private = mark_safe(render_text(self.body_private))
         else:
             private = ''
         return render_to_string('post-body.html', 

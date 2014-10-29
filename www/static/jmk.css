@@ -223,14 +223,18 @@ h2.content-header {
 /* } */
 
 .blogview .blogentry {
-	margin-top: 24px;
-	margin-bottom: 24px;
+	margin-top: 48px;
+	margin-bottom: 48px;
 }
 .blogview .title .glyphicon {
 	font-size: 80%;
 }
-.blogview .post-body {
-	margin-left: 12px;
+/* .blogview .post-body { */
+/* 	margin-left: 12px; */
+/* } */
+
+.post-body ul {
+	margin-left: -10px;
 }
 
 .post-body .attached-picture-full {
@@ -271,6 +275,7 @@ h2.content-header {
 
 .pagination {
 	width: 100%;
+	margin: 0;
 }
 
 .pagination input {
@@ -498,6 +503,7 @@ table.calendar ul.date-posts {
 	padding: 0;
 	margin: 0;
 	margin-top: 10px;
+	font-size: 12pt;
 }
 
 

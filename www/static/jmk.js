@@ -101,4 +101,8 @@ $(function() {
 		}
 		return true;
 	});
+
+	$("span.katex-inline").each(function() {
+		katex.render($(this).html(), this);
+	});
 });

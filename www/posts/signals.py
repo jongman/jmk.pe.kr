@@ -14,7 +14,7 @@ from django.template import Context
 #     send_mail_task.delay(*args, **kwargs)
 
 # TODO: send emails in celery
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=User, dispatch_uid='new_user')
 def new_user(sender, **kwargs):
     if kwargs.get('created'):
         instance = kwargs.get('instance')
@@ -23,7 +23,7 @@ def new_user(sender, **kwargs):
                   settings.ADMIN_EMAIL, 
                   [settings.ADMIN_EMAIL])
 
-@receiver(post_save, sender=Comment)
+@receiver(post_save, sender=Comment, dispatch_uid='new_comment')
 def new_comment(sender, **kwargs):
     recipients = set([settings.ADMIN_EMAIL])
     instance = kwargs.get('instance')

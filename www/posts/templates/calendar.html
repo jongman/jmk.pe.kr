@@ -28,6 +28,8 @@
 								</span>
 							</h2>
 						</div>
+						
+						{{ pagination.render }}
 
 						<div class="calendar-tabular visible-md-block visible-lg-block">
 							<table class="calendar table table-bordered">
@@ -59,6 +61,7 @@
 															{% for post in posts %}
 																<li>
 																	<a href="{% url "post-read" slug=post.slug %}">{{ post.title|truncatechars:8 }}</a>
+																	{% if post.comment_set.count > 0 %}<small>[{{ post.comment_set.count }}]</small>{% endif %}
 																</li>
 															{% endfor %}
 														</ul>
@@ -78,6 +81,7 @@
 								{% for post in posts %}
 									<li>
 										<a href="{% url "post-read" slug=post.slug %}">{{ post.title }}</a> 
+											{% if post.comment_set.count > 0 %}[{{ post.comment_set.count }}]{% endif %}
 											<small>
 												{{ post.timestamp|date:'Y년 n월 j일' }}
 												{% if post.permission > 0 %}
@@ -92,7 +96,6 @@
 						</div>
 					</div>
 
-					{{ pagination.render }}
 
 
 {% endblock %}

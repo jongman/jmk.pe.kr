@@ -31,10 +31,11 @@
 								</span>
 							</h2>
 						</div>
+						{{ pagination.render }}
 						{% for post in pagination.page.object_list %}
 						<div class="blogentry">
 							<div class="title">
-								<h4>
+								<h3>
 									{# <span class="glyphicon glyphicon-list-alt"></span> #}
 									<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
 									<div class="pull-right visible-md-block visible-lg-block">
@@ -45,15 +46,15 @@
 											{% endif %}
 											<span class="glyphicon glyphicon-calendar"></span>
 											{{ post.timestamp|date:'Y년 n월 j일' }}
-											{% if not category %}
-												<span class="glyphicon glyphicon-tags"></span>
-												{% for category in post.tags.slugs %}
-													<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
-												{% endfor %}
-											{% endif %}
+											<span class="glyphicon glyphicon-tags"></span>
+											{% for category in post.tags.slugs %}
+												<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
+											{% endfor %}
+											<span class="glyphicon glyphicon-comment"></span>
+											<a href="{{ post.get_absolute_url }}#comments">{{ post.comment_set.count }} comment{% if post.comment_set.count != 1 %}s{% endif %}</a>
 										</small>
 									</div>
-								</h4>
+								</h3>
 							</div>
 							<div class="post-body">
 								{{ post|render_post_excerpt }}

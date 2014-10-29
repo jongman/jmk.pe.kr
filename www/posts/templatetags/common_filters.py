@@ -3,7 +3,7 @@ from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 from django.conf import settings
-from markdown import markdown as render_md
+from posts.utils import render_text
 
 register = template.Library()
 
@@ -17,7 +17,7 @@ def render_post(post, full):
 
 @register.filter
 def markdown(text):
-    return mark_safe(render_md(text))
+    return mark_safe(render_text(text))
 
 @register.filter
 def render_security_question(question):

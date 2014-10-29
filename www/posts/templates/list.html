@@ -31,12 +31,13 @@
 								</span>
 							</h2>
 						</div>
+						{{ pagination.render }}
 						<ul class="post-list">
 							{% for post in pagination.page.object_list %}
 								<li>
 									<a href="{% url "post-read" slug=post.slug %}">{{ post.title }}</a> 
 										<small>
-											{{ post.timestamp|date:'Y년 n월 j일' }}
+											{{ post.timestamp|date:'Y년 n월 j일' }}{% if post.comment_set.count > 0 %}, {{ post.comment_set.count }} comment{% if post.comment_set.count != 1 %}s{% endif %}{% endif %}
 											{% if post.permission > 0 %}
 												({{ post.permission_name }})
 											{% endif %}

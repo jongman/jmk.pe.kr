@@ -28,7 +28,7 @@ from datetime import date, datetime, timedelta
 from collections import defaultdict
 import calendar as cal
 
-TIMELINE_PPP = 30
+TIMELINE_PPP = 20
 SEARCH_PPP = 100 
 LIST_PPP = 500
 THUMBNAIL_SIZE = 150
@@ -54,6 +54,9 @@ def determine_permission_level(user):
     friends, _ = Group.objects.get_or_create(name='Friends')
     if friends in user.groups.all():
         return FRIENDS
+    so, _ = Group.objects.get_or_create(name='SignificantOther')
+    if so in user.groups.all():
+        return SIGNIFICANT_OTHER
     return LOGGED_IN
 
 def augment_context(request, ctx):
@@ -251,7 +254,9 @@ def write(request, id=None, date=None, start_with=None):
         form = WriteForm(data=data)
 
     if request.method == 'POST' and form.is_valid():
-        post = form.save()
+        post = form.save(commit=False)
+        post.timestamp = datetime.now()
+        post.save()
 
         att = json.loads(request.POST['serialized_attachments'])
         post.pictures.clear()
