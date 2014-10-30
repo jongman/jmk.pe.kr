@@ -6,7 +6,7 @@
 								<select class="page-selector">
 									{% for number, link, active in links %}
 										{% if active %}
-											<option selected>{{ number }}/{{ num_pages  }}</option>
+											<option selected>#{{ number }}/{{ num_pages  }}</option>
 										{% else %}
 											<option value="{{ link }}">{{ number }}</option>
 										{% endif %}

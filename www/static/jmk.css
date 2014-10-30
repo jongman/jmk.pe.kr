@@ -246,6 +246,7 @@ h2.content-header {
 
 .post-body .attached-picture-full img {
 	max-width: 100%;
+	max-height: 800px;
 }
 
 .post-body .attached-picture-full .comments {
@@ -259,6 +260,9 @@ h2.content-header {
 
 .album-picture {
 	float: left;
+}
+
+.album-picture, .legacy-thumbnail {
 	width: 150px;
 	height: 150px;
 	display: block;
@@ -315,6 +319,10 @@ ul.comment li, ul.comments li, ul.comment-info li, ul.comment-form li {
 	list-style-type: none;
 	width: 100%;
 	padding: 0;
+}
+li.comment {
+	margin-bottom: 16px;
+	margin-top: 16px;
 }
 ul.comment-form li {
 	margin-top: 4px;
@@ -737,4 +745,8 @@ table.calendar ul.date-posts {
     border-radius: 4px;
     background-color: rgba(0,0,0,.3);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+.render-fail {
+	color: red; 
 }

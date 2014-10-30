@@ -30,7 +30,7 @@ import calendar as cal
 
 TIMELINE_PPP = 20
 SEARCH_PPP = 100 
-LIST_PPP = 500
+LIST_PPP = 100
 THUMBNAIL_SIZE = 150
 
 def clean_empty_tags():
@@ -255,8 +255,8 @@ def write(request, id=None, date=None, start_with=None):
 
     if request.method == 'POST' and form.is_valid():
         post = form.save(commit=False)
-        post.timestamp = datetime.now()
         post.save()
+        form.save_m2m()
 
         att = json.loads(request.POST['serialized_attachments'])
         post.pictures.clear()
@@ -333,6 +333,11 @@ def post_comment(request):
 
     return redirect(reverse('post-read', kwargs={'slug': post.slug}))
 
+def check_comment_password(stored, entered):
+    if stored.startswith('sha1$$'):
+        return hashlib.sha1(entered).hexdigest() == stored[6:]
+    return bcrypt.checkpw(entered, stored)
+
 def delete_comment(request, id):
     comment = get_object_or_404(Comment, pk=id)
     if comment.author and not (request.user == comment.author or
@@ -340,7 +345,9 @@ def delete_comment(request, id):
         return HttpResponseForbidden()
     if request.method == 'POST':
         if comment.author is None and not request.user.is_superuser:
-            if not bcrypt.checkpw(request.POST['password'], comment.password):
+
+            if not check_comment_password(comment.password,
+                                          request.POST['password']):
                 return augmented_render(request, 'delete-comment.html', 
                                         {'comment': comment, 
                                          'error': u'비밀번호가 틀립니다.'})
@@ -370,7 +377,7 @@ def is_image(file_name):
     return file_name.lower().split('.')[-1] in ('jpeg', 'jpg', 'png', 'gif')
 
 def save_thumbnail(target_path, file):
-    orig = Image.open(StringIO(file.read()))
+    orig = Image.open(StringIO(file.read())).convert('RGB')
     thumbnail = ImageOps.fit(orig, (THUMBNAIL_SIZE, THUMBNAIL_SIZE),
                              Image.ANTIALIAS)
     temp = StringIO()
@@ -508,3 +515,7 @@ def login(request):
 def logout(request):
     logout_user(request)
     return redirect('/')
+
+def redirect_legacy_link(request, page):
+    r = get_object_or_404(Redirect, from_url='/' + page)
+    return redirect(r.to_url)

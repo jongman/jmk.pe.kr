@@ -9,7 +9,7 @@
 
 								<ul class="comments">
 									{% for depth, comment in comments %}
-									<li>
+									<li class="comment">
 										<a name="c{{ comment.pk }}" id="c{{ comment.pk }}"></a>
 										<ul class="comment {% if depth > 0 %}nested depth{{depth}}{% endif %}">
 											<li class="comment-info">
@@ -37,7 +37,7 @@
 												{% if comment.deleted %}
 												<span class="deleted-comment">삭제됨</span>
 												{% else %}
-												{{ comment.comment|markdown }}
+												{{ comment.comment|newline_to_br }}
 												{% endif %}
 											</li>
 										</ul>
@@ -61,7 +61,11 @@
 														{% endif %}
 													</li>
 													<li class="comment-body">
+														{% if user.is_authenticated %}
 														<textarea name="body" placeholder="코멘트.."></textarea>
+														{% else %}
+														<textarea name="body" placeholder="회원 가입하시면 댓글이 달렸을 때 알림을 받으실 수 있어요."></textarea>
+														{% endif %}
 													</li>
 													<li class="comment-submit">
 														<input class="submit" type="submit" value="Post"/>
@@ -97,7 +101,11 @@
 													{% endif %}
 												</li>
 												<li class="comment-body">
+													{% if user.is_authenticated %}
 													<textarea name="body" placeholder="코멘트.."></textarea>
+													{% else %}
+													<textarea name="body" placeholder="회원 가입하시면 댓글이 달렸을 때 알림을 받으실 수 있어요."></textarea>
+													{% endif %}
 												</li>
 												<li class="comment-submit">
 													<input class="submit" type="submit" value="Post"/>

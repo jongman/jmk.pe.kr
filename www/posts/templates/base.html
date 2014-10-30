@@ -106,7 +106,13 @@
 						<h4>COMMENTS</h4>
 						<ul class="recent-comments">
 							{% for comment in recent_comments %}
-							<li> <b>{{ comment.name }}</b>: <a href="{{ comment.post.get_absolute_url }}#c{{ comment.pk }}">{{ comment.comment|truncatechars:20 }}</a>
+							<li> 
+								{% if comment.author %}
+									<b>{{ comment.name }}</b></a>: 
+								{% else %}
+									{{ comment.name }}</a>: 
+								{% endif %}
+							<a href="{{ comment.post.get_absolute_url }}#c{{ comment.pk }}">{{ comment.comment|truncatechars:20 }}</a>
 							{% endfor %}
 						</ul>
 					</div>

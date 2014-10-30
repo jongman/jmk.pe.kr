@@ -129,9 +129,16 @@ def process_katex(text):
     text = text.replace(r'\$', '&#36;')
     return re.sub(ur'\$[^\$가-힣]+\$', lambda match: prepare_katex(match.group(0)), text)
 
+# escape intra-word underscores
+def escape_underscores(text):
+    return re.sub(ur'[^\\\s]_[^\\\s]', 
+                  lambda match: match.group(0).replace('_', r'\_'), text)
+
 def render_text(text):
     # simulate Github-Flavored Markdown
     text = highlight_source_code(text)
     # prepare text for Katex rendering
     text = process_katex(text)
+    # escape underscores
+    # text = escape_underscores(text)
     return markdown(text)

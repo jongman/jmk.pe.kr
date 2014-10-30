@@ -56,5 +56,7 @@ urlpatterns = patterns(
     url(r'^search/$', views.search, name='search'),
     url(r'^search/(?P<page>\d+)$', views.search, name='search'),
 
+    url(r'^pages/read/(?P<page>.+)$', views.redirect_legacy_link),
+
 
 )

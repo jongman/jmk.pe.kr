@@ -28,8 +28,12 @@ PERMISSION_NAMES = {PUBLIC: 'Public',
 ALBUM_TYPE = {'full': u'크게 보기',
               'thumbnails': u'썸네일 보기'}
 
+class Redirect(models.Model):
+    from_url = models.CharField(max_length=256, db_index=True)
+    to_url = models.CharField(max_length=256)
+    
 class Post(models.Model):
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     dated = models.DateField(u'날짜')
     permission = models.IntegerField(u'공개', choices=PERMISSION_NAMES.items(),
                                     default=PUBLIC)
@@ -127,7 +131,7 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', default=None, null=True, related_name='+')
     comment = models.TextField()
 
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.IPAddressField(null=True)
 
     deleted = models.BooleanField(default=False)

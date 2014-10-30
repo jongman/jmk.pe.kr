@@ -103,6 +103,11 @@ $(function() {
 	});
 
 	$("span.katex-inline").each(function() {
-		katex.render($(this).html(), this);
+		var expr = $(this).html();
+		try {
+			katex.render(expr, this);
+		} catch(e) {
+			$(this).html(expr).addClass("render-fail");
+		}
 	});
 });

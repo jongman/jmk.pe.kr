@@ -20,6 +20,10 @@ def markdown(text):
     return mark_safe(render_text(text))
 
 @register.filter
+def newline_to_br(text):
+    return mark_safe(text.replace('\n', '<br/>\n'))
+
+@register.filter
 def render_security_question(question):
     fragments = []
     if 'before' in question: 
