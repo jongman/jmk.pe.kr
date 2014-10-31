@@ -392,7 +392,7 @@ def save_thumbnail(target_path, file):
 
 @superuser_only
 def list_attachment_folders(request):
-    pics = Attachment.objects.filter(is_picture=True)
+    pics = Attachment.objects.filter(is_picture=True).exclude(state=HIDDEN)
     annotated = pics.values('date').annotate(first=Min('pk'), cnt=Count('pk'))
     response =  [{'folder': entry['date'].strftime('%Y-%m-%d'),
                   'images': entry['cnt'],
