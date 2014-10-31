@@ -94,6 +94,8 @@ USE_TZ = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/vagrant/attachments/'
 
+STATIC_ROOT = '/vagrant/static'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
