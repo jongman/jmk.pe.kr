@@ -321,8 +321,8 @@ def post_comment(request):
         comment.name = request.user.username
     else:
         comment.name = request.POST['name']
-        comment.password = bcrypt.hashpw(request.POST['password'], 
-                                         bcrypt.gensalt())
+        password = request.POST['password'].encode('utf-8')
+        comment.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
     if request.POST['parent']:
         parent = get_object_or_404(Comment, pk=int(request.POST['parent']))
@@ -334,6 +334,7 @@ def post_comment(request):
     return redirect(reverse('post-read', kwargs={'slug': post.slug}))
 
 def check_comment_password(stored, entered):
+    entered = entered.encode('utf-8')
     if stored.startswith('sha1$$'):
         return hashlib.sha1(entered).hexdigest() == stored[6:]
     return bcrypt.checkpw(entered, stored)
