@@ -25,8 +25,11 @@ def new_user(sender, **kwargs):
 
 @receiver(post_save, sender=Comment, dispatch_uid='new_comment')
 def new_comment(sender, **kwargs):
-    recipients = set([settings.ADMIN_EMAIL])
+    recipients = set()
     instance = kwargs.get('instance')
+
+    if not instance.author or not instance.author.is_superuser:
+        recipients.add(settings.ADMIN_EMAIL)
     if instance.parent and instance.parent.author:
         recipients.add(instance.parent.author.email)
 
