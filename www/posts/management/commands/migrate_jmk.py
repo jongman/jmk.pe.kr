@@ -267,6 +267,7 @@ def migrate_post(db, users, uploaded):
                 kwargs['password'] = 'sha1$$' + (c['author_password'] or 'written_by_an_openid_user')
 
             cc = Comment(**kwargs)
+            cc.save()
             cc.timestamp = c['dated']
             cc.save()
         
