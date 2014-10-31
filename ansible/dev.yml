@@ -1,0 +1,14 @@
+# vim: set expandtab ts=2 sw=2 filetype=yaml:
+---
+- hosts: all
+  vars:
+    home_dir: /vagrant
+    django_dir: /vagrant/www
+    user: vagrant
+    config_name: dev
+    db_name: jmk
+  remote_user: vagrant
+  tasks:
+  # - name: copy local settings
+  #   file: src={{home_dir}}/www/algospot/local_settings.py.dev dest={{home_dir}}/www/algospot/local_settings.py state=link
+  - include: single_box.yml
