@@ -421,7 +421,7 @@ def list_attachment(request):
     y, m = map(int, request.GET.get('folder').split('-'))
 
     pics = Attachment.objects.filter(is_picture=True)
-    pics = pics.filter(date__year=y, date__month=m).order_by('date', 'pk')
+    pics = pics.filter(date__year=y, date__month=m).order_by('date', 'timestamp')
 
     response = [{'pk': pic.pk,
                  'thumbnail': pic.thumbnail.url,
