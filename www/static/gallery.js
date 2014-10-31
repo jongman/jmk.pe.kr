@@ -357,7 +357,7 @@ function display_folder_entries() {
 	var body = $("#gallery-root .contents .entries .body");
 	var already_loaded = body.find('.image').length;
 	var to_display = already_loaded + (screen_info.rows + 1) * screen_info.columns;
-	var entries = entries_list[current_folder];
+	var entries = entries_list[current_folder] || [];
 	var template = $(".image-template");
 	var date_template = $(".date-template");
 
