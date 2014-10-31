@@ -9,7 +9,7 @@ class WriteForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'slug', 'tags', 'body_public', 'body_private', 
-                  'dated', 'permission', 'album_type']
+                  'dated', 'permission', 'album_type', 'use_excerpts']
 
     def __init__(self, *args, **kwargs):
         super(forms.ModelForm, self).__init__(*args, **kwargs)

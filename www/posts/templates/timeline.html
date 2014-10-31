@@ -57,7 +57,9 @@
 								</h3>
 							</div>
 							<div class="post-body">
-								{{ post|render_post_excerpt }}
+								{% with True as render_excerpt %}
+									{% include "render-post.html" %}
+								{% endwith %}
 							</div>
 						</div>
 						{% endfor %}

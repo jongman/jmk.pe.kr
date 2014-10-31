@@ -48,6 +48,7 @@ class Post(models.Model):
     body_private = models.TextField(u'내용 (비공개)', default='', blank=True)
     body_public = models.TextField(u'내용', default='', blank=True)
 
+    use_excerpts = models.BooleanField(u'축약 사용', default=True)
     pictures = models.ManyToManyField('Attachment', through='AttachedPicture')
 
     tags = TaggableManager()
@@ -61,35 +62,8 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post-read', kwargs={'slug': self.slug})
 
-    def render_excerpt(self):
-        to_render = ''
-        public, private = self.body_public, self.body_private
-
-        EXCERPT_FORMAT = u"%(excerpt)s\n\n[(read more..)](%(link)s)"
-
-        # if public body defines an excerpt portion
-        if '[[more]]' in public:
-            excerpt = public.split('[[more]]')[0]
-            to_render = EXCERPT_FORMAT % {'excerpt': excerpt, 
-                                          'link':  self.get_absolute_url()}
-
-        # or when there is a private body or an attachment
-        elif self.body_private or self.pictures.count() > 0:
-            to_render = EXCERPT_FORMAT % {'excerpt': public, 
-                                          'link':  self.get_absolute_url()}
-        else:
-            to_render = public
-
-        return render_text(to_render)
-
-    def render(self, is_superuser):
-        public = mark_safe(render_text(self.body_public.replace('[[more]]', '')))
-        if is_superuser:
-            private = mark_safe(render_text(self.body_private))
-        else:
-            private = ''
-        return render_to_string('post-body.html', 
-                                {'public': public, 'private': private})
+    def attachments(self):
+        return AttachedPicture.objects.filter(post=self).order_by('order').all()
 
     def clean(self):
         if not self.body_private and not self.body_public:

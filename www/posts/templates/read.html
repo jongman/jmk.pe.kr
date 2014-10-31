@@ -61,30 +61,9 @@
 							</div>
 						</div>
 						<div class="post-body">
-							{{ post|render_post:user.is_superuser }}
-
-							{% if album_type == 'full' %}
-								{% for attachment in attachments %}
-									<div class="attached-picture-full">
-										<a class="lightbox-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.file.url }}"/></a>
-										{% if attachment.notes %}
-											<div class="comments">
-												{{ attachment.notes|markdown }}
-											</div>
-										{% endif %}
-									</div>
-								{% endfor %}
-							{% endif %}
-							{% if album_type == 'thumbnails' %}
-								<div class="attached-album">
-								{% for attachment in attachments %}
-									<div class="album-picture">
-										<a class="lightbox-caption-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.thumbnail.url }}" data-note-id="note{{ attachment.pk }}"/></a>
-										<span class="notes" id="note{{ attachment.pk }}">{% if attachment.notes %}{{ attachment.notes|markdown }}{% endif %}</span>
-									</div>
-								{% endfor %}
-								</div>
-							{% endif %}
+								{% with False as render_excerpt %}
+									{% include "render-post.html" %}
+								{% endwith %}
 						</div>
 						{% with commentobject=post %}
 							{% include "comment_block.html" %}

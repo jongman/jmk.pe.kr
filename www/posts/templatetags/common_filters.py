@@ -8,8 +8,8 @@ from posts.utils import render_text
 register = template.Library()
 
 @register.filter
-def render_post_excerpt(post):
-    return mark_safe(post.render_excerpt())
+def render_post_excerpt(post, full):
+    return mark_safe(post.render_excerpt(full))
 
 @register.filter
 def render_post(post, full):
@@ -18,6 +18,14 @@ def render_post(post, full):
 @register.filter
 def markdown(text):
     return mark_safe(render_text(text))
+
+@register.filter
+def strip_more(text):
+    return text.replace('[[more]]', '')
+
+@register.filter
+def cut_more(text):
+    return text.split('[[more]]')[0]
 
 @register.filter
 def newline_to_br(text):
