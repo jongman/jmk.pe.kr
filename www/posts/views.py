@@ -393,12 +393,8 @@ def save_thumbnail(target_path, file):
 @superuser_only
 def list_attachment_folders(request):
     pics = Attachment.objects.filter(is_picture=True)
-    # not_hidden = pics.filter(state__gte=NORMAL)
-    with_extra = pics.extra(select={'y': 'extract(year from date)', 
-                                    'm': 'extract(month from date)'})
-    values = with_extra.values('y', 'm')
-    annotated = values.annotate(first=Min('pk'), cnt=Count('pk'))
-    response =  [{'folder': '%.4d-%.2d' % (entry['y'], entry['m']),
+    annotated = pics.values('date').annotate(first=Min('pk'), cnt=Count('pk'))
+    response =  [{'folder': entry['date'].strftime('%Y-%m-%d'),
                   'images': entry['cnt'],
                   'thumbnail': Attachment.objects.get(pk=entry['first']).thumbnail.url}
                  for entry in annotated]
@@ -418,10 +414,9 @@ def set_attachment_state(request):
 
 @superuser_only
 def list_attachment(request):
-    y, m = map(int, request.GET.get('folder').split('-'))
+    dt = date(*map(int, request.GET.get('folder').split('-')))
 
-    pics = Attachment.objects.filter(is_picture=True)
-    pics = pics.filter(date__year=y, date__month=m).order_by('date', 'timestamp')
+    pics = Attachment.objects.filter(is_picture=True).filter(date=dt).order_by('timestamp')
 
     response = [{'pk': pic.pk,
                  'thumbnail': pic.thumbnail.url,

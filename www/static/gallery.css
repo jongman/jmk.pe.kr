@@ -180,9 +180,10 @@ div.loading {
 {
 	width: 150px;
 	min-height: 100px;
+
 	float: left;
-	margin: 8px 0 0 0;
-	margin-right: 18px;
+	margin: 8px 15px 8px 15px;
+	/* margin-right: 18px; */
 }
 
 #gallery-root .contents .image img {
@@ -201,6 +202,7 @@ div.loading {
 
 #gallery-root .contents .folder .title {
 	margin: 6px 0 6px 0;
+	min-height: 40px;
 	font-size: 10pt;
 	text-align: center;
 	overflow: hidden;

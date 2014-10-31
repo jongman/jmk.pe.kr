@@ -1,7 +1,7 @@
 var folder_list;
+var years;
 var entries_list = {};
 var current_folder;
-var last_date_displayed = null;
 var next_entry_to_display = 0;
 var current_mode = null;
 var current_image_index = 0;
@@ -34,6 +34,13 @@ function check_shortcuts(e) {
 	if(current_mode == "folders") {
 		if(e.keyCode == 27) {
 			close_gallery();
+		}
+		else if(e.keyCode == 37) {
+			if(!$("#prev-year").attr("disabled")) $("#prev-year").click();
+		}
+		else if(e.keyCode == 39) {
+			if(!$("#next-year").attr("disabled")) $("#next-year").click();
+			// $("#next-year").click();
 		}
 	}
 	if(current_mode == "entries") {
@@ -87,6 +94,13 @@ function attach_events() {
 	function bind(selector, event_name, func) {
 		$(selector).unbind(event_name).bind(event_name, func);
 	}
+
+	// year
+	bind("select#years", "change", function() { show_year($(this).val()); });
+
+	// folder navigation
+	bind("#prev-year", "click", function() { show_year(years[years.indexOf($("select#years").val())-1]); });
+	bind("#next-year", "click", function() { show_year(years[years.indexOf($("select#years").val())+1]); });
 	
 	// shortcuts
 	bind(document, "keyup", check_shortcuts);
@@ -134,6 +148,26 @@ function attach_events() {
 	bind("#cancel-button", "click", close_gallery);
 
 	// exit confirmation
+}
+
+function show_year(year) {
+	$("select#years").val(year);
+	$(".folder").each(function() {
+		if($(this).hasClass("year" + year))
+			$(this).show();
+		else
+			$(this).hide();
+	});
+
+	if(year == years[0]) 
+		$("#prev-year").attr('disabled', 'disabled');
+	else
+		$("#prev-year").removeAttr('disabled');
+
+	if(year == years[years.length-1]) 
+		$("#next-year").attr('disabled', 'disabled');
+	else
+		$("#next-year").removeAttr('disabled');
 }
 
 function show_folder_list() {
@@ -334,11 +368,6 @@ function display_folder_entries() {
 
 		if(!is_visible(entry.state)) continue;
 
-		if(entry.date != last_date_displayed) {
-			last_date_displayed = entry.date;
-			date_template.clone().removeClass("date-template").html(last_date_displayed).appendTo(body);
-		}
-
 		var cloned = template.clone(true);
 		cloned.removeClass("image-template").attr('id', 'entry-' + entry.pk);
 		cloned.find('img').data('pk', entry.pk)
@@ -375,7 +404,6 @@ function load_folder(folder) {
 		current_folder = folder;
 		update_folder_navigation_buttons();
 
-		last_date_displayed = null;
 		display_folder_entries();
 	}
 
@@ -397,7 +425,7 @@ function load_folder(folder) {
 function load_folder_list() {
 	// load folder list
 	// on completion, generate thumbnails and entries
-	var folders = $("#gallery-root .contents .folders");
+	var folders = $("#gallery-root .contents .folders .thumbnails");
 	folders.html("");
 	show_loading_indicator(folders);
 	show_folder_list();
@@ -408,11 +436,17 @@ function load_folder_list() {
 		var template = $(".folder-template");
 
 		folder_list = [];
+		years = [];
 
 		var folders_select = $("select#folders");
 		folders_select.html("");
 
 		for(var i = 0; i < data.length; ++i) {
+
+			var year = data[i].folder.split("-")[0];
+			if(years.length == 0 || years[years.length-1] != year) {
+				years.push(year);
+			}
 
 			var cloned = template.clone(true);
 			cloned.removeClass("folder-template");
@@ -420,12 +454,21 @@ function load_folder_list() {
 			cloned.find(".text").html(data[i].folder);
 			cloned.find(".imgcnt").html(data[i].images);
 			cloned.find("img").attr("src", data[i].thumbnail);
+			cloned.hide().addClass("year" + year);
 			cloned.appendTo(folders);
 
 			folder_list.push(data[i].folder);
 
 			folders_select.append($("<option/>").val(data[i].folder).text(data[i].folder));
 		}
+		years.sort();
+		years.reverse();
+		
+		var years_select = $("select#years");
+		for(var i = 0; i < years.length; ++i)
+			years_select.append($("<option/>").val(years[i]).text(years[i]));
+
+		if(years.length > 0) show_year(years[0]);
 	});
 }
 
