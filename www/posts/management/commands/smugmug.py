@@ -178,6 +178,7 @@ class Command(BaseCommand):
                                     original_link=image['URL'])
             attachment.save()
             attachment.timestamp = timestamp
+            attachment.save()
             updated = True
         return updated
 
