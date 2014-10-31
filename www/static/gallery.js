@@ -485,6 +485,7 @@ function open_gallery() {
 }
 
 function close_gallery(no_check) {
+	if(!$("body").hasClass("modal-open")) return;
 	if(selected.length == 0 || no_check || confirm("선택된 사진이 있습니다. 정말 닫으시겠어요?")) {
 		$("body").removeClass("modal-open");
 		$("#gallery-root").hide("fast");
