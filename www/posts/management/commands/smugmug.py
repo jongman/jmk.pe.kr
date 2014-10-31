@@ -50,6 +50,10 @@ class API(object):
         args["AlbumKey"] = album_key
         return self._call("smugmug.images.get", args)["Album"]["Images"]
 
+    def get_exif(self, image_id, image_key):
+        return self._call("smugmug.images.getEXIF",
+                          {"ImageID": image_id, "ImageKey": image_key})
+
     def get_image_info(self, image_id, image_key):
         return self._call("smugmug.images.getInfo",
                           {"ImageID": image_id, "ImageKey": image_key})
@@ -169,15 +173,18 @@ class Command(BaseCommand):
             self.download(image['ThumbURL'], 
                           path.join(settings.MEDIA_ROOT, thumb_path))
 
-            timestamp = datetime.strptime(image['Date'], '%Y-%m-%d %H:%M:%S')
+            exif = self.api.get_exif(image['id'], image['Key'])
+            dt = exif.get('Image', {}).get('DateTimeOriginal', '')
+            if not dt:
+                timestamp = datetime(dated.year, date.month, dated.day)
+            else:
+                timestamp = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
             attachment = Attachment(is_picture=True, 
                                     date=dated,
                                     timestamp=timestamp,
                                     file=file_path,
                                     thumbnail=thumb_path,
                                     original_link=image['URL'])
-            attachment.save()
-            attachment.timestamp = timestamp
             attachment.save()
             updated = True
         return updated
