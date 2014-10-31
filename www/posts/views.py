@@ -338,7 +338,7 @@ def check_comment_password(stored, entered):
     stored = stored.encode('utf-8')
     if stored.startswith('sha1$$'):
         return hashlib.sha1(entered).hexdigest() == stored[6:]
-    return bcrypt.checkpw(entered, stored)
+    return bcrypt.hashpw(entered, stored) == stored
 
 def delete_comment(request, id):
     comment = get_object_or_404(Comment, pk=id)
