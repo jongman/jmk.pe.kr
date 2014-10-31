@@ -335,6 +335,7 @@ def post_comment(request):
 
 def check_comment_password(stored, entered):
     entered = entered.encode('utf-8')
+    stored = stored.encode('utf-8')
     if stored.startswith('sha1$$'):
         return hashlib.sha1(entered).hexdigest() == stored[6:]
     return bcrypt.checkpw(entered, stored)
