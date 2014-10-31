@@ -1,0 +1,6 @@
+
+{% if not post.use_excerpts or not render_excerpt %}
+{% include "render-post-full.html" %}
+{% else %}
+{% include "render-post-excerpt.html" %}
+{% endif %}

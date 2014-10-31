@@ -1,0 +1,10 @@
+{% load common_filters %}
+{% load staticfiles %}
+						<div class="public-body">
+							{{ post.body_public|cut_more|markdown }}
+
+							{% if post.body_private and user.is_superuser or post.attachment.count > 0 %}
+								<a href="{{ post.get_absolute_url }}">(read more..)</a>
+							{% endif %}
+						</div>
+

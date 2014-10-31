@@ -1,0 +1,34 @@
+{% load common_filters %}
+{% load staticfiles %}
+						<div class="public-body">
+							{{ post.body_public|strip_more|markdown }}
+						</div>
+
+						{% if post.body_private and user.is_superuser %}
+						<div class="private-body">
+							<p><img src="{% static "incognito.png" %}"/></p>
+							{{ post.body_private|markdown }}
+						</div>
+						{% endif %}
+						{% if post.album_type == 'full' %}
+							{% for attachment in post.attachments %}
+								<div class="attached-picture-full">
+									<a class="lightbox-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.file.url }}"/></a>
+									{% if attachment.notes %}
+										<div class="comments">
+											{{ attachment.notes|markdown }}
+										</div>
+									{% endif %}
+								</div>
+							{% endfor %}
+						{% endif %}
+						{% if post.album_type == 'thumbnails' %}
+							<div class="attached-album">
+							{% for attachment in post.attachments %}
+								<div class="album-picture">
+									<a class="lightbox-caption-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.thumbnail.url }}" data-note-id="note{{ attachment.pk }}"/></a>
+									<span class="notes" id="note{{ attachment.pk }}">{% if attachment.notes %}{{ attachment.notes|markdown }}{% endif %}</span>
+								</div>
+							{% endfor %}
+							</div>
+						{% endif %}
