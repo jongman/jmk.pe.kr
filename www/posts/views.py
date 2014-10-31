@@ -29,7 +29,7 @@ from collections import defaultdict
 import calendar as cal
 
 TIMELINE_PPP = 20
-SEARCH_PPP = 100 
+SEARCH_PPP = 20 
 LIST_PPP = 100
 THUMBNAIL_SIZE = 150
 
