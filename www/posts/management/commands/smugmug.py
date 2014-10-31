@@ -176,7 +176,7 @@ class Command(BaseCommand):
             exif = self.api.get_exif(image['id'], image['Key'])
             dt = exif.get('Image', {}).get('DateTimeOriginal', '')
             if not dt:
-                timestamp = datetime(dated.year, date.month, dated.day)
+                timestamp = datetime(dated.year, dated.month, dated.day)
             else:
                 timestamp = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
             attachment = Attachment(is_picture=True, 
