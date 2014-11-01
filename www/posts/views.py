@@ -211,7 +211,6 @@ def read(request, slug, album_type=''):
     return augmented_render(request, 'read.html', 
                             {'post': post, 
                              'question': question,
-                             'attachments': attached,
                              'comments': comments, 
                              'album_type': album_type,
                              'comments_count': len(comments)})

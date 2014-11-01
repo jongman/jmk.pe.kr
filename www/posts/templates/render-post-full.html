@@ -10,7 +10,7 @@
 							{{ post.body_private|markdown }}
 						</div>
 						{% endif %}
-						{% if post.album_type == 'full' %}
+						{% if album_type == 'full' or not album_type and post.album_type == 'full' %}
 							{% for attachment in post.attachments %}
 								<div class="attached-picture-full">
 									<a class="lightbox-link" href="{{ attachment.picture.file.url }}"><img src="{{ attachment.picture.file.url }}"/></a>
@@ -22,7 +22,7 @@
 								</div>
 							{% endfor %}
 						{% endif %}
-						{% if post.album_type == 'thumbnails' %}
+						{% if album_type == 'thumbnails' or not album_type and post.album_type == 'thumbnails' %}
 							<div class="attached-album">
 							{% for attachment in post.attachments %}
 								<div class="album-picture">
