@@ -1,7 +1,20 @@
 {% load common_filters %}
 {% load staticfiles %}
 						<div class="public-body">
+							{% if post.body_public %}
 							{{ post.body_public|cut_more|markdown }}
+							{% elif post.attachments %}
+								{% with cover=post.attachments|first %}
+									<div class="attached-picture-full">
+										<a class="lightbox-link" href="{{ cover.picture.file.url }}"><img src="{{ cover.picture.file.url }}"/></a>
+										{% if cover.notes %}
+											<div class="comments">
+												{{ cover.notes|markdown }}
+											</div>
+										{% endif %}
+									</div>
+								{% endwith %}
+							{% endif %}
 
 							{% if '[[more]]' in post.body_public or post.body_private and user.is_superuser or post.attachments %}
 								<a href="{{ post.get_absolute_url }}">(read more..)</a>

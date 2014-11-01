@@ -63,11 +63,9 @@ class Post(models.Model):
         return reverse('post-read', kwargs={'slug': self.slug})
 
     def attachments(self):
-        return AttachedPicture.objects.filter(post=self).order_by('order').all()
-
-    def clean(self):
-        if not self.body_private and not self.body_public:
-            raise ValidationError(u"비공개/공개 내용 중 하나는 들어가야 합니다.")
+        if not getattr(self, '_cached_attachments', None):
+            self._cached_attachments = AttachedPicture.objects.filter(post=self).order_by('order').all()
+        return self._cached_attachments
 
 
 class Attachment(models.Model):
