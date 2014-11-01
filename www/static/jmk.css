@@ -275,7 +275,7 @@ h2.content-header {
 }
 .album-picture span.notes
 {
-	background-color: rgba(0, 0, 0, 0.6);
+	background-color: rgba(0, 0, 0, 0.7);
 	position: absolute;
 	color: #fff;
 	z-index: 100;
@@ -291,6 +291,7 @@ h2.content-header {
 	padding: 4px;
 	max-height: 150px;
 	overflow: hidden;
+	pointer-events:none;
 }
 .album-picture:hover span.notes {
 	-moz-transform: translateY(-100%);
