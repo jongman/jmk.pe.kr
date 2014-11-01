@@ -651,6 +651,7 @@ table.calendar ul.date-posts {
 
 #imagelightbox-overlay {
 	background-color: rgba(0,0,0,0.7);
+	pointer-events:none;
 	position: fixed;
 	z-index: 9998;
 	top: 0;
