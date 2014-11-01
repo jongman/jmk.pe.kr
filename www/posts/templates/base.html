@@ -43,7 +43,7 @@
 					<div>
 						<ul class="main-menu">
 							<li>
-								<a href="{% url "list" category="about" %}">ABOUT</a>
+								<a href="{% url "head" "about" %}">ABOUT</a>
 							</li>
 							<li>
 								<a href="{% url "timeline" %}">BLOG</a>
@@ -60,6 +60,9 @@
 										<a href="{% url "calendar" %}">CALENDAR</a>
 									</li>
 								</ul>
+							</li>
+							<li>
+								<a href="{% url "head" "guestbooks" %}">GUESTBOOK</a>
 							</li>
 							<li>
 								<a href="http://feeds.feedburner.com/jongman">RSS</a>
