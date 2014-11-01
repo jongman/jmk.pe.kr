@@ -9,8 +9,15 @@
 								<div class="pull-right visible-md-block visible-lg-block">
 									<small class="dates">
 										{% if user.is_superuser %}
-											<a href="{% url "post-write" post.pk %}"><span class="glyphicon glyphicon-edit" title="편집"></span></a>
-											<a class="confirm" href="{% url "post-delete" post.pk %}"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+											<a href="{% url "post-write" post.pk %}">편집</a> |
+											<a class="confirm" href="{% url "post-delete" post.pk %}">삭제</a> |
+										{% endif %}
+										{% if post.attachments %}
+											{% if album_type == 'full' %}
+												<a href="{% url "post-read-thumbnails" slug=post.slug %}">썸네일 보기</a> |
+											{% else %}
+												<a href="{% url "post-read-full" slug=post.slug %}">크게 보기</a> |
+											{% endif %}
 										{% endif %}
 										{% if post.permission > 0 %}
 											<span class="glyphicon glyphicon-lock"></span>
@@ -24,21 +31,21 @@
 										{% for category in post.tags.slugs %}
 											<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
 										{% endfor %}
-										{% if post.attachments %}
-											{% if album_type == 'full' %}
-												<a href="{% url "post-read-thumbnails" slug=post.slug %}"><span class="glyphicon glyphicon-th" title="썸네일로 보기"></span></a>
-											{% else %}
-												<a href="{% url "post-read-full" slug=post.slug %}"><span class="glyphicon glyphicon-picture" title="큰 사진으로 보기"></span></a>
-											{% endif %}
-										{% endif %}
 									</small>
 								</div>
 							</h2>
 							<div class="visible-xs-block visible-sm-block">
 								<small class="dates">
 									{% if user.is_superuser %}
-										<a href="{% url "post-write" post.pk %}"><span class="glyphicon glyphicon-edit" title="편집"></span></a>
-										<a class="confirm" href="{% url "post-delete" post.pk %}"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
+										<a href="{% url "post-write" post.pk %}">편집</a> |
+										<a class="confirm" href="{% url "post-delete" post.pk %}">삭제</a> |
+									{% endif %}
+									{% if post.attachments %}
+										{% if album_type == 'full' %}
+											<a href="{% url "post-read-thumbnails" slug=post.slug %}">썸네일 보기</a> |
+										{% else %}
+											<a href="{% url "post-read-full" slug=post.slug %}">크게 보기</a> |
+										{% endif %}
 									{% endif %}
 									{% if post.permission > 0 %}
 										<span class="glyphicon glyphicon-lock"></span>
@@ -50,13 +57,6 @@
 										{% for category in post.tags.slugs %}
 											<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
 										{% endfor %}
-										{% if post.attachments %}
-											{% if album_type == 'full' %}
-												<a href="{% url "post-read-thumbnails" slug=post.slug %}"><span class="glyphicon glyphicon-th" title="썸네일로 보기"></span></a>
-											{% else %}
-												<a href="{% url "post-read-full" slug=post.slug %}"><span class="glyphicon glyphicon-picture" title="큰 사진으로 보기"></span></a>
-											{% endif %}
-										{% endif %}
 								</small>
 							</div>
 						</div>

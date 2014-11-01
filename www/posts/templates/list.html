@@ -9,20 +9,11 @@
 								<span class="pull-right">
 									<small class="dates">
 										{% if category %}
-											<a href="{% url "timeline" category=category %}">
-												<span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span>
-											</a>
-											<a href="{% url "calendar" category=category %}">
-												<span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span>
-											</a>
-
+											<a href="{% url "timeline" category=category %}">블로그 보기</a> |
+											<a href="{% url "calendar" category=category %}">달력 보기</a>
 										{% else %}
-											<a href="{% url "timeline" %}">
-												<span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span>
-											</a>
-											<a href="{% url "calendar" %}">
-												<span class="glyphicon glyphicon-calendar" title="날짜별 보기"></span>
-											</a>
+											<a href="{% url "timeline" %}">블로그 보기</a> |
+											<a href="{% url "calendar" %}">달력 보기</a>
 										{% endif %}
 
 										{# <a href="#"><span class="glyphicon glyphicon-th-list" title="블로그로 보기"></span></a> #}
