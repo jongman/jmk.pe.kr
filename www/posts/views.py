@@ -88,6 +88,19 @@ def timeline(request, category='', page=1):
                             {'category': category,
                              'pagination': pagination})
 
+
+def category_first(request, category):
+    if category: 
+        posts = Post.objects.filter(tags__name__in=[category])
+    else:
+        posts = Post.objects
+    perm = determine_permission_level(request.user)
+    posts = posts.filter(permission__lte=perm)
+    post = posts.order_by('-timestamp').first()
+
+    return redirect(post.get_absolute_url())
+
+
 def search(request, page=1):
     perm = determine_permission_level(request.user)
     posts = Post.objects.filter(permission__lte=perm)

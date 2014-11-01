@@ -10,6 +10,7 @@ urlpatterns = patterns(
     url(r'^timeline/(?P<page>\d+)$', views.timeline, name='timeline'),
     url(r'^category/(?P<category>[^/]+)/timeline/?$', views.timeline, name='timeline'),
     url(r'^category/(?P<category>[^/]+)/timeline/(?P<page>\d+)$', views.timeline, name='timeline'),
+    url(r'^head/(?P<category>[^/]+)$', views.category_first, name='head'),
 
     url(r'^list/?$', views.list_posts, name='list'),
     url(r'^list/(?P<page>\d+)$', views.list_posts, name='list'),
