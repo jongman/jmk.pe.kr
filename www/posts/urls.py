@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
 import views
+import feeds
 
 urlpatterns = patterns(
     'posts.views',
@@ -57,6 +58,8 @@ urlpatterns = patterns(
     url(r'^search/(?P<page>\d+)$', views.search, name='search'),
 
     url(r'^pages/read/(?P<page>.+)$', views.redirect_legacy_link),
+
+    url(r'^feed/$', feeds.LatestEntriesFeed()),
 
 
 )
