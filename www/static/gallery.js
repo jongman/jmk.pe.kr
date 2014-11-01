@@ -268,6 +268,7 @@ function preload_full_image(delta) {
 	var index = get_next_index(delta);
 	if(index != -1) {
 		var entries = entries_list[current_folder];
+		console.log('preloading', entries[index].file)
 		$("<img/>").attr("src", entries[index].file).load();
 
 	}
@@ -313,6 +314,7 @@ function flip_image(direction) {
 							display_folder_entries();
 						}
 						flip_in_progress = false;
+						preload_full_image(direction);
 					});
 
 	};
