@@ -50,7 +50,7 @@
 										{% for category in post.tags.slugs %}
 											<a href="{% url "timeline" category=category %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
 										{% endfor %}
-										{% if attachments %}
+										{% if post.attachments %}
 											{% if album_type == 'full' %}
 												<a href="{% url "post-read-thumbnails" slug=post.slug %}"><span class="glyphicon glyphicon-th" title="썸네일로 보기"></span></a>
 											{% else %}
