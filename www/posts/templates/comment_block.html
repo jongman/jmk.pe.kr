@@ -29,8 +29,8 @@
 															{% if not comment.author or user.is_superuser or user == comment.author %}
 															<a href="{% url "delete-comment" comment.pk %}"><span class="glyphicon glyphicon-remove" title="삭제"></span></a>
 															{% endif %}
+															<a href="javascript:;" class="nested-comment" target="replyform{{ comment.pk }}"><span class="glyphicon glyphicon-share" title="댓글"></span></a>
 														{% endif %}
-														<a href="javascript:;" class="nested-comment" target="replyform{{ comment.pk }}"><span class="glyphicon glyphicon-share" title="댓글"></span></a>
 													</small>
 											</li>
 											<li class="comment-body">
@@ -42,6 +42,7 @@
 											</li>
 										</ul>
 									</li>
+									{% if not comment.deleted %}
 									<li class="nested-comment-form" id="replyform{{ comment.pk }}">
 										<div id="comment_form">
 											<form class="comment" method="post" action="{% url "post-comment" %}">
@@ -73,8 +74,8 @@
 												</ul>
 											</form>
 										</div>
-
 									</li>
+									{% endif %}
 									{% endfor %}
 								</ul>
 							</div>
