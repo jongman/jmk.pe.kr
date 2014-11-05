@@ -94,8 +94,8 @@
 			cloned.removeClass("attachment-template");
 			cloned.find(".lightbox-link").attr("href", file_path);
 			cloned.find(".lightbox-link img").attr("src", thumbnail_path);
-			cloned.find(".remove-icon").click(function() { cloned.remove(); });
 			cloned.find(".pk").attr('title', pk);
+			cloned.find(".remove-icon").click(function() { cloned.remove(); });
 			$("#attachments").append(cloned);
 		}
 
@@ -129,6 +129,12 @@
 		}
 
 		$(function() {
+			$("li.attachment").each(function() {
+				var $this = $(this);
+				if(!$this.hasClass("attachment-template")) {
+					$this.find(".remove-icon").click(function() { $this.remove(); });
+				}
+			});
 			$("#import-attachments").click(open_gallery);
 			$("#id_dated").datepicker({
 				format: 'yyyy-mm-dd',

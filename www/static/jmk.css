@@ -676,93 +676,10 @@ table.calendar ul.date-posts {
 	padding: 16px;
 }
 
-#picture-picker {
-	position: fixed;
-	z-index: 9900;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 32px;
-	background-color: rgba(0, 0, 0, 0.8);
-	display: none;
+.remove-icon {
+	cursor: pointer;
 }
-#forgiveme {
-	width: 100%;
-	height: 100%;
-	border-radius: 8px;
-	background-color: rgba(255, 255, 255, 0.9);
-}
-#picture-picker h4 {
-	padding-bottom: 8px;
-	margin-bottom: 8px;
-	border-bottom: 1px solid #333;
-}
-#picture-picker .folders {
-	width: 100%; 
-	height: 100%;
-	overflow: scroll;
-	padding: 8px;
-}
-#picture-picker .folder-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	margin-left: 8px;
-	line-height: 150%;
-}
-#picture-picker .folder-template {
-	display: none;
-}
-#picture-picker .folder-entry {
-	float: left;
-	display: block;
-	position: relative;
-}
-#picture-picker .folder-entry .lightbox-folder-link {
-}
-#picture-picker .folder-entry .pick {
-	position: absolute;
-	left: 10px;
-	top: 10px;
-}
-#picture-picker .folder-entry-template {
-	display: none;
-}
-#picture-picker .picked-thumbnails {
-	width: 100%; 
-	height: 100%;
-	overflow: scroll;
-	padding: 8px;
-}
-#picture-picker .picked-thumbnails img {
-	margin: 2px;
-	border: 1px solid #666;
-	box-shadow: 0px 0px 2px #333;
-}
-#picture-picker .contents {
-	width: 100%; 
-	height: 100%;
-	overflow: scroll;
-	padding: 8px;
-	padding-top: 8px;
 
-}
-#picture-picker .contents img {
-	margin: 2px;
-	border: 1px solid #666;
-	box-shadow: 0px 0px 2px #333;
-}
-#picture-picker .loading {
-	background-image: url(loading.gif);
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-}
-#picture-picker .buttons {
-	text-align: right;
-	padding: 4px;
-}
 
 ::-webkit-scrollbar {
     -webkit-appearance: none;
