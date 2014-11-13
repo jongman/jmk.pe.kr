@@ -84,6 +84,7 @@ DATABASES = {
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Seoul'
+JONGMAN_TIME_ZONE = 'US/Eastern'
 
 USE_I18N = True
 

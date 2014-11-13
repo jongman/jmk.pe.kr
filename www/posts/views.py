@@ -13,6 +13,7 @@ from django.conf import settings
 import bcrypt
 from json import dumps
 from taggit.models import Tag
+from pytz import timezone
 from PIL import Image, ImageOps
 
 import json
@@ -233,11 +234,15 @@ def write_album(request):
     pics = map(int, request.GET.get('pics', '').split(','))
     return write(request, start_with=pics)
 
+jongman_tz = timezone(settings.JONGMAN_TIME_ZONE)
+server_tz = timezone(settings.SERVER_TIME_ZONE)
+
 @superuser_only
 def write_journal(request, year='', month='', day=''):
     if not year:
-        dt = date.today()
-        if datetime.now().hour < 7:
+        now = server_tz.localize(datetime.now()).astimezone(jongman_tz)
+        dt = now.date()
+        if now.hour < 7:
             dt = dt + timedelta(days=-1)
     else:
         dt = date(int(year), int(month), int(day))
