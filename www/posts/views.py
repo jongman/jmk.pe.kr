@@ -235,7 +235,7 @@ def write_album(request):
     return write(request, start_with=pics)
 
 jongman_tz = timezone(settings.JONGMAN_TIME_ZONE)
-server_tz = timezone(settings.SERVER_TIME_ZONE)
+server_tz = timezone(settings.TIME_ZONE)
 
 @superuser_only
 def write_journal(request, year='', month='', day=''):
