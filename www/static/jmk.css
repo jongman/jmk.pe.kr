@@ -81,7 +81,8 @@ input[type=button], input[type=submit] {
 		background-color: #333;
 		background-size: cover;
 		/* background-image: url(grasses2.jpg); */
-		background-image: url(flowers.jpg);
+		/* background-image: url(flowers.jpg); */
+		background-image: url(lake.jpg);
 		background-attachment: fixed;
 }
 }
