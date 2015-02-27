@@ -19,6 +19,8 @@
   - postgresql-server-dev-9.3
   - libffi-dev
   - rabbitmq-server
+  - libimage-exiftool-perl
+  - imagemagick
 
 - name: "install pip"
   sudo: yes
@@ -41,6 +43,7 @@
   - markdown
   - bcrypt
   - pygments
+  - wand
 
 - name: "add nginx stable"
   sudo: yes
@@ -64,4 +67,8 @@
   postgresql_db: name={{db_name}}
   sudo: yes
   sudo_user: postgres
+
+- name: "run celery on startup"
+  sudo: yes
+  shell: update-rc.d celeryd defaults
 
