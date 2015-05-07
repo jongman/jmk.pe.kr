@@ -124,6 +124,20 @@
 							{% endfor %}
 						</ul>
 					</div>
+					{% if past_years %}
+					<hr class="visible-md-block visible-lg-block"/>
+					<div class="recent-comments visible-md-block visible-lg-block">
+						<h4>PAST YEARS</h4>
+						<ul class="recent-comments">
+							{% for post in past_years %}
+							<li> 
+								<b>{{ post.dated.year }}</b>: 
+								<a href="{{ post.get_absolute_url }}">{{ post.title|truncatechars:20 }}</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					{% endif %}
 				</div>
 
 				<div class="col-md-10 written">

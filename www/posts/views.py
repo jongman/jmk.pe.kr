@@ -63,7 +63,13 @@ def determine_permission_level(user):
 def augment_context(request, ctx):
     perm = determine_permission_level(request.user)
     comments = Comment.objects.filter(deleted=False, post__permission__lte=perm).order_by('-pk')[:20]
+    today = date.today()
+    past_years = Post.objects.filter(Q(dated__month=today.month),
+                                     Q(dated__day=today.day)).order_by('-dated')
+    past_years = [post for post in past_years if post.dated != today]
     ctx['recent_comments'] = comments
+    ctx['past_years'] = past_years
+    ctx['today'] = today
     return ctx
 
 def augmented_render(request, template_name, ctx):
