@@ -65,7 +65,8 @@ def augment_context(request, ctx):
     comments = Comment.objects.filter(deleted=False, post__permission__lte=perm).order_by('-pk')[:20]
     today = date.today()
     past_years = Post.objects.filter(Q(dated__month=today.month),
-                                     Q(dated__day=today.day)).order_by('-dated')
+                                     Q(dated__day=today.day),
+                                     permission__lte=perm).order_by('-dated')
     past_years = [post for post in past_years if post.dated != today]
     ctx['recent_comments'] = comments
     ctx['past_years'] = past_years
