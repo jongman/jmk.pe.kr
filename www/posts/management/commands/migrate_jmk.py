@@ -74,20 +74,27 @@ TAGS_MAP = {
     'trading': ['work'],
     'writings': ['to-sort'],
     'trip': ['travel'],
-    'ChapterEurope': ['travel'],
-    '/chicago/lake': ['chicago', 'journal'],
-    '/chicago/beer': ['chicago', 'journal'],
-    '/chicago/shopping': ['chicago', 'journal'],
-    '/chicago/restaurant': ['chicago', 'journal'],
-    'rome': ['travel'],
-    'rome_1': ['travel'],
-    'rome_2': ['travel'],
-    'rome_3': ['travel'],
+    '/ChapterEurope/': ['travel'],
+    '/chicago/lake/': ['chicago', 'journal'],
+    '/chicago/beer/': ['chicago', 'journal'],
+    '/chicago/shopping/': ['chicago', 'journal'],
+    '/chicago/restaurant/': ['chicago', 'journal'],
+    '/chicago/foods/': ['chicago', 'food'],
+    'bodytracking': ['bodytracking', 'journal'],
+    '/ChapterEurope/rome/': ['travel'],
+    '/ChapterEurope/rome_1/': ['travel'],
+    '/ChapterEurope/rome_2/': ['travel'],
+    '/ChapterEurope/rome_3/': ['travel'],
+    'product': ['chicago', 'product'],
+    'school': ['chicago', 'school'],
+    'photo': ['chicago', 'albums'],
     'baby': ['baby', 'journal'],
     'travel': ['travel'],
     'atlanta': ['travel'],
     'BabyLog': ['baby'],
     'trivialmono': ['journal'],
+    'trivial mono': ['journal', 'trivialmono'],
+    'chicago': ['chicago', 'journal'],
 }
 
 def fetch_all(db, table, **where):
@@ -132,6 +139,7 @@ def process_body(body, file_id_mapping):
         get = tokens.index('get')
         no = int(tokens[get+1])
         sz = tokens[get+2]
+        if no not in file_id_mapping: return portion.group(0)
 
         if not file_id_mapping[no].is_picture:
             cmt = cmt or path.basename(file_id_mapping[no].name)
@@ -172,7 +180,11 @@ def migrate_post(db, users, uploaded):
     dirs = fetch_all(db, 'jmk_directories')
     DIR_MAP = {}
     for dir in dirs:
-        gg = TAGS_MAP.get(dir['full_path']) or TAGS_MAP.get(dir['name']) or ['to-sort']
+        gg = TAGS_MAP.get(dir['full_path']) or TAGS_MAP.get(dir['name'])
+        if gg is None:
+            print dir['full_path']
+            print dir['name']
+            assert False
         DIR_MAP[dir['no']] = gg
     DIR_MAP[0] = ['journal']
 
