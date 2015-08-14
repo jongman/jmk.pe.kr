@@ -136,7 +136,7 @@ def process_body(body, file_id_mapping):
                 file_id_mapping[no].thumbnail.url)) + cmt
 
 
-    body = re.sub(r"{http://jmk.pe.kr/upload/get/[^}]+?}", fix_image, body)
+    body = re.sub(r"{http://dazzling.pe.kr/upload/get/[^}]+?}", fix_image, body)
 
     return body
 
