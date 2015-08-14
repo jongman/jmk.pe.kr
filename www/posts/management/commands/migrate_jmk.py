@@ -73,6 +73,21 @@ TAGS_MAP = {
     'gadgets': ['journal'],
     'trading': ['work'],
     'writings': ['to-sort'],
+    'trip': ['travel'],
+    'ChapterEurope': ['travel'],
+    '/chicago/lake': ['chicago', 'journal'],
+    '/chicago/beer': ['chicago', 'journal'],
+    '/chicago/shopping': ['chicago', 'journal'],
+    '/chicago/restaurant': ['chicago', 'journal'],
+    'rome': ['travel'],
+    'rome_1': ['travel'],
+    'rome_2': ['travel'],
+    'rome_3': ['travel'],
+    'baby': ['baby', 'journal'],
+    'travel': ['travel'],
+    'atlanta': ['travel'],
+    'BabyLog': ['baby'],
+    'trivialmono': ['journal'],
 }
 
 def fetch_all(db, table, **where):
@@ -157,7 +172,7 @@ def migrate_post(db, users, uploaded):
     dirs = fetch_all(db, 'jmk_directories')
     DIR_MAP = {}
     for dir in dirs:
-        gg = TAGS_MAP.get(dir['full_path']) or TAGS_MAP.get(dir['name'])
+        gg = TAGS_MAP.get(dir['full_path']) or TAGS_MAP.get(dir['name']) or ['to-sort']
         DIR_MAP[dir['no']] = gg
     DIR_MAP[0] = ['journal']
 
