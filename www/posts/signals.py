@@ -35,7 +35,7 @@ def new_comment(sender, **kwargs):
 
     email_template = get_template('comment-email.txt')
     body = email_template.render(Context({'comment': instance}))
-    subject = 'JMK: New Comment On "%s" by %s' % (instance.post.title,
+    subject = 'dazzling girl: New Comment On "%s" by %s' % (instance.post.title,
                                                   instance.name)
     send_mail(subject.encode('utf-8'), body.encode('utf-8'),
               settings.ADMIN_EMAIL, recipients)
