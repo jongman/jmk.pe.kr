@@ -1,7 +1,7 @@
 server {
 	listen 80 default_server;
 	#listen 443 ssl default_server;
-	server_name jmk.pe.kr;
+	server_name dazzling.pe.kr;
 
 	client_max_body_size 16m;
 
@@ -18,20 +18,20 @@ server {
 		# as directory, then fall back to index.html
 		#try_files $uri $uri/ /index.html;
 		include uwsgi_params;
-		uwsgi_pass unix:///tmp/django.sock;
+		uwsgi_pass unix:///tmp/django-dazzling.sock;
 		#uwsgi_pass 127.0.0.1:3031;
 	}
 
 	location /static {
-		alias /vagrant/static;
+		alias /dazzling/static;
 		autoindex off;
 	}
 	location /media {
-		alias /vagrant/attachments;
+		alias /dazzling/attachments;
 		autoindex off;
 	}
 	location /favicon.ico {
-		alias /vagrant/favicon.ico;
+		alias /dazzling/favicon.ico;
 	}
 }
 
