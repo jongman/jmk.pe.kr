@@ -82,7 +82,7 @@ input[type=button], input[type=submit] {
 		background-size: cover;
 		/* background-image: url(grasses2.jpg); */
 		/* background-image: url(flowers.jpg); */
-		background-image: url(moraine-blurred.jpg);
+		background-image: url(city.jpg);
 		background-attachment: fixed;
 }
 }
@@ -107,7 +107,7 @@ body, html, .main-container {
 }
 .main-container {
 	box-shadow: 0px 0px 16px #000;
-	background-color: rgba(251, 248, 255, 0.9);
+	background-color: rgba(251, 248, 255, 0.7);
 	padding-bottom: 16px;
 	border-radius: 5px;
 }
