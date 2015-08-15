@@ -18,7 +18,7 @@ from django.template import Context
 def new_user(sender, **kwargs):
     if kwargs.get('created'):
         instance = kwargs.get('instance')
-        send_mail('JMK: New User %s' % instance.username.encode('utf-8'), 
+        send_mail('dazzling girl: New User %s' % instance.username.encode('utf-8'), 
                   'Email: %s' % instance.email,
                   settings.ADMIN_EMAIL, 
                   [settings.ADMIN_EMAIL])
