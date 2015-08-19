@@ -134,7 +134,19 @@ def escape_underscores(text):
     return re.sub(ur'[^\\\s]_[^\\\s]', 
                   lambda match: match.group(0).replace('_', r'\_'), text)
 
+def render_classic(text):
+    text = text.replace('<', '&lt;')
+    text = text.replace('>', '&gt;')
+    text = text.replace('\n', '<br/>')
+
+    return '\n'.join(('<p>', text, '</p>'))
+
 def render_text(text):
+    if '!markdown!' not in text:
+        return render_classic(text)
+    else:
+        text = text.replace('!markdown!', '')
+        
     # simulate Github-Flavored Markdown
     text = highlight_source_code(text)
     # prepare text for Katex rendering
@@ -142,3 +154,5 @@ def render_text(text):
     # escape underscores
     # text = escape_underscores(text)
     return markdown(text)
+
+
