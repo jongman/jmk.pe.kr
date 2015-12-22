@@ -116,7 +116,7 @@ def apply_pygments(str):
     return highlight(str, lexer, formatter)
 
 def highlight_source_code(text):
-    return re.sub('^```.*?\n.+?^```\n', lambda match: apply_pygments(match.group(0)),
+    return re.sub('^```.*?\n.+?^```', lambda match: apply_pygments(match.group(0)),
                   text, flags=re.DOTALL|re.MULTILINE)
 
 def prepare_katex(str):
