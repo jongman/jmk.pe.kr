@@ -109,7 +109,10 @@ def apply_pygments(str):
     str = '\n'.join(lines[1:-1])
     first = lines[0].strip().lstrip('`')
     if first:
-        lexer = get_lexer_by_name(first)
+        try:
+            lexer = get_lexer_by_name(first)
+        except:
+            lexer = guess_lexer(str)
     else:
         lexer = guess_lexer(str)
     formatter = HtmlFormatter(style='colorful')
