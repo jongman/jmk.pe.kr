@@ -52,6 +52,8 @@ urlpatterns = patterns(
         name='set-attachment-state'),
 
     url(r'^login/$', views.login, name='login'),
+    url(r'^lost-password/$', views.lost_password, name='lost-password'),
+    url(r'^reset-password/(?P<uuid>.+)$', views.reset_password, name='reset-password'),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^logout/$', views.logout, name='logout'),
 

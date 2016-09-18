@@ -31,7 +31,7 @@
 									<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
 									<div class="pull-right visible-sm-block visible-xs-block">
 										<small>
-											(<a href="{{ post.get_absolute_url }}#comments">{{ post.comment_set.count }} comment{% if post.comment_set.count != 1 %}s{% endif %})
+											(<a href="{{ post.get_absolute_url }}#comments">{{ post.comment_set.count }} comment{% if post.comment_set.count != 1 %}s{% endif %}</a>)
 										</small>
 									</div>
 									<div class="pull-right visible-md-block visible-lg-block">

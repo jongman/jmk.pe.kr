@@ -6,10 +6,12 @@ from django.contrib.auth import login as login_user
 from django.contrib.auth import logout as logout_user
 from django.core.files.storage import DefaultStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.mail import send_mail
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
 from django.db.models import Min, Max, Count, Q
 from django.conf import settings
+from uuid import uuid4
 import bcrypt
 from json import dumps
 from taggit.models import Tag
@@ -536,6 +538,42 @@ def login(request):
 def logout(request):
     logout_user(request)
     return redirect('/')
+
+LOST_PW_EMAIL = u'''jmk.pe.kr ID/비밀번호 찾기를 요청하셨습니다.
+
+만일 직접 요청하지 않으셨다면 이 메일을 무시하셔도 좋습니다.
+
+사용자명: %(id)s
+비밀번호 찾기 링크: %(recover_url)s
+
+감사합니다.
+JM'''
+
+def lost_password(request):
+    error = None
+    email_sent = False
+    if request.method == 'POST':
+        email = request.POST['email']
+        users = User.objects.filter(email__iexact=email)
+        if len(users) == 0:
+            error = u'등록되지 않은 이메일입니다.'
+        else:
+            for user in users:
+                uuid = str(uuid4())
+                url = reverse('reset-password', kwargs={'uuid': uuid})
+                PasswordRecoveryRequest(user=user, uuid=uuid).save()
+                send_mail(u'jmk.pe.kr 비밀번호 찾기'.encode('utf-8'),
+                          LOST_PW_EMAIL % {'id': user.username,
+                                           'recover_url': url},
+                          settings.ADMIN_EMAIL,
+                          [settings.ADMIN_EMAIL, email])
+            email_sent = True
+
+    return augmented_render(request, 'account/lost-password.html',
+                            {'email_sent': email_sent, 'error': error})
+
+def reset_password(request, uuid):
+    return None
 
 def redirect_legacy_link(request, page):
     r = get_object_or_404(Redirect, from_url='/' + page)
