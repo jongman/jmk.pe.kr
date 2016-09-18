@@ -322,9 +322,9 @@ h2.content-header span.subtitle {
 .pagination input {
 	height: 40px;
 	width: 60px;
-	background-color: #eee;
-	color: #333;
-	border: 1px solid #ccc;
+	background-color: #444;
+	color: #ddd;
+	border: 1px solid #555;
 	text-shadow: none;
 }
 .pagination select {
@@ -408,7 +408,7 @@ ul.depth9 { margin-left: 120px; }
 ul.depth10 { margin-left: 120px; }
 
 div.private-body {
-	background-color: #eee;
+	background-color: #444;
 	min-height: 80px;
 	padding: 16px;
 }
