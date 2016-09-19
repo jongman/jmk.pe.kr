@@ -31,11 +31,6 @@ ALBUM_TYPE = {'full': u'크게 보기',
 class Redirect(models.Model):
     from_url = models.CharField(max_length=256, db_index=True)
     to_url = models.CharField(max_length=256)
-
-class PasswordRecoveryRequest(models.Model):
-    user = models.ForeignKey(User, null=False)
-    uuid = models.CharField(max_length=64)
-    timestamp = models.DateTimeField(auto_now_add=True)
     
 class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
