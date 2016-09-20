@@ -87,7 +87,7 @@ def gallery(request):
 def user(request, id):
     user = User.objects.get(id=id)
     perm = determine_permission_level(request.user)
-    comments = Comment.objects.filter(author=user, deleted=False, post__permission__lte=perm).order_by('pk')
+    comments = Comment.objects.filter(author=user, deleted=False, post__permission__lte=perm).order_by('-pk')
     return augmented_render(request, 'user-comments.html', {'user': user, 'comments': comments})
 
 def timeline(request, category='', page=1):
