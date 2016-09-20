@@ -18,9 +18,10 @@ ATTACHMENT_STATE_NAMES = {HIDDEN: u'숨김',
                           NORMAL: u'',
                           STARRED: u'별표'}
 
-PUBLIC, LOGGED_IN, FRIENDS, SIGNIFICANT_OTHER, PRIVATE = range(5)
+PUBLIC, LOGGED_IN, AUTHORIZED, FRIENDS, SIGNIFICANT_OTHER, PRIVATE = range(6)
 PERMISSION_NAMES = {PUBLIC: 'Public',
                     LOGGED_IN: 'Only Logged In',
+                    AUTHORIZED: 'Authorized Only',
                     FRIENDS: 'Friends',
                     SIGNIFICANT_OTHER: 'Significant Other',
                     PRIVATE: 'Private'}
@@ -36,7 +37,7 @@ class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     dated = models.DateField(u'날짜')
     permission = models.IntegerField(u'공개', choices=PERMISSION_NAMES.items(),
-                                    default=PUBLIC)
+                                    default=AUTHORIZED)
 
     slug = models.CharField(u'링크 이름', max_length=100, db_index=True,
                             unique=True)

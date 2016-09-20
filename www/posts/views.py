@@ -54,6 +54,9 @@ def determine_permission_level(user):
         return PUBLIC
     if user.is_superuser:
         return PRIVATE
+    authorized, _ = Group.objects.get_or_create(name='Authorized')
+    if authorized in user.groups.all():
+        return AUTHORIZED
     friends, _ = Group.objects.get_or_create(name='Friends')
     if friends in user.groups.all():
         return FRIENDS
