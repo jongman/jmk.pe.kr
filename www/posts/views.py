@@ -84,10 +84,10 @@ def augmented_render(request, template_name, ctx):
 def gallery(request):
     return augmented_render(request, "gallery.html", {});
 
-
 def user(request, id):
     user = User.objects.get(id=id)
-    comments = Comment.objects.filter(author=user, deleted=False).order_by('pk')
+    perm = determine_permission_level(request.user)
+    comments = Comment.objects.filter(author=user, deleted=False, post__permission__lte=perm).order_by('pk')
     return augmented_render(request, 'user-comments.html', {'user': user, 'comments': comments})
 
 def timeline(request, category='', page=1):
