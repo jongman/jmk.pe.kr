@@ -116,7 +116,7 @@
 							{% for comment in recent_comments %}
 							<li> 
 								{% if comment.author %}
-									<b>{{ comment.name }}</b></a>: 
+									<b><a href="{% url "user-details" comment.author.id %}">{{ comment.name }}</a></b>: 
 								{% else %}
 									{{ comment.name }}</a>: 
 								{% endif %}

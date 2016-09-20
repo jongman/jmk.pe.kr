@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load common_filters %}
+{% block contents %}
+					<div class="entry">
+						<div class="title">
+							<h2 class="content-header">
+								{# <span class="heading glyphicon glyphicon-list-alt"></span> #}
+								{{ user.username }}님의 댓글들 (총 {{ comments|length }}개)
+							</h2>
+						</div>
+					</div>
+					<div class="comments">
+						<ul class="comments">
+							{% for comment in comments %}
+							<li class="comment">
+								<ul class="comment">
+									<li class="comment-info">
+										<span class="glyphicon glyphicon-user" title="로그인된 사용자"></span>
+										<b><a href="{% url "user-details" comment.author.id %}">{{ comment.author.username }}</a></b>
+										on
+										<small class="dates">											
+											<a href="{{ comment.post.get_absolute_url }}#c{{ comment.pk }}">{{ comment.post.title }}</a>
+											({{ comment.timestamp|date:'Y년 n월 j일' }})
+										</small>
+									</li>
+									<li class="comment-body">
+										{{ comment.comment|newline_to_br }}
+									</li>
+								</ul>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+
+{% endblock %}

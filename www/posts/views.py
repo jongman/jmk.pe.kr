@@ -85,6 +85,11 @@ def gallery(request):
     return augmented_render(request, "gallery.html", {});
 
 
+def user(request, id):
+    user = User.objects.get(id=id)
+    comments = Comment.objects.filter(author=user, deleted=False).order_by('pk')
+    return augmented_render(request, 'user-comments.html', {'user': user, 'comments': comments})
+
 def timeline(request, category='', page=1):
     if category: 
         posts = Post.objects.filter(tags__name__in=[category])

@@ -22,6 +22,8 @@ urlpatterns = patterns(
     url(r'^category/(?P<category>[^/]+)/calendar/?$', views.calendar, name='calendar'),
     url(r'^category/(?P<category>[^/]+)/calendar/(?P<year>\d{4})/(?P<month>\d{1,2})/?$', views.calendar, name='calendar'),
 
+    url(r'^user/(?P<id>\d+)$', views.user, name='user-details'),
+
     url(r'^read/(?P<slug>.+)$', views.read, name='post-read'),
     url(r'^full/(?P<slug>.+)$', views.read, name='post-read-full',
         kwargs={'album_type': 'full'}),
