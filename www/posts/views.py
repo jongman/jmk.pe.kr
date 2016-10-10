@@ -281,7 +281,7 @@ def write(request, id=None, date=None, start_with=None):
             data = {'title': date.strftime('%Y%m%d'),
                     'slug': date.strftime('%Y%m%d'),
                     'dated': date.strftime('%Y-%m-%d'),
-                    'permission': PUBLIC,
+                    'permission': AUTHORIZED,
                     'album_type': 'full',
                     'tags': 'journal'}
 
