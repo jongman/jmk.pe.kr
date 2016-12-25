@@ -13,6 +13,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 ADMIN_EMAIL = 'jongman@gmail.com'
+ADMINS = (('JM', 'jongman@gmail.com'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -26,7 +27,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['jmk.pe.kr', 'www.jmk.pe.kr']
 
 
 # Application definition
