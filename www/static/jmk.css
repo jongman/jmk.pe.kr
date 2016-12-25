@@ -17,6 +17,9 @@ a {
 	color: #933;
 	/* text-decoration: underline; */
 }
+a.plain {
+	color: #333;
+}
 body { font-size: 13pt; }
 textarea, input, select {
 	font-size: 12pt;
