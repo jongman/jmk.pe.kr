@@ -530,6 +530,7 @@ def new_attachment(request):
         return {'success': True, 
                 'error': '', 
                 'is_picture': attachment.is_picture,
+                'file_name': file.name,
                 'file_path': attachment.file.url,
                 'thumbnail_path': attachment.thumbnail.url,
                 'pk': attachment.pk,

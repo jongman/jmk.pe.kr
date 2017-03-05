@@ -167,7 +167,7 @@
 					}
 					else {
 						var public = $("#id_body_public");
-						public.val(public.val() + "\n[" + file + "](" + response.file_path + ")");
+						public.val(public.val() + "\n[" + response.file_name + "](" + response.file_path + ")");
 						alert("Attached a non-image file: link appended to post body.");
 					}
 				},
