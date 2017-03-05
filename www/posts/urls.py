@@ -4,7 +4,7 @@ import feeds
 
 urlpatterns = [
 
-    #url(r'', views.timeline),
+    url(r'^/?$', views.timeline),
     url(r'^timeline/?$', views.timeline, name='timeline'),
     url(r'^timeline/(?P<page>\d+)$', views.timeline, name='timeline'),
     url(r'^category/(?P<category>[^/]+)/timeline/?$', views.timeline, name='timeline'),
