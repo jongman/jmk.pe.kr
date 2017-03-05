@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout as logout_user
 from django.core.files.storage import default_storage
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.template import RequestContext
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
@@ -16,7 +16,9 @@ import bcrypt
 from json import dumps
 from taggit.models import Tag
 from pytz import timezone
-from PIL import Image, ImageOps, ExifTags
+from tempfile import NamedTemporaryFile
+from subprocess import check_call
+import gc
 
 import json
 import hashlib
@@ -420,9 +422,7 @@ def rotate(image):
         for orientation in ExifTags.TAGS.keys():
             if ExifTags.TAGS[orientation] == 'Orientation':
                 break
-        print 'rotation', orientation
         e = image._getexif()  # returns None if no EXIF data
-        print 'e', e is None
         if e is not None:
             exif = dict(e.items())
             orientation = exif[orientation]
@@ -436,9 +436,6 @@ def rotate(image):
             elif orientation == 8:
                 rotated = True
                 image = image.transpose(Image.ROTATE_90)
-    else:
-        print 'image doesn have exif'
-    print 'rotated', rotated
     return rotated, image
 
 def image_to_file(filename, image):
@@ -448,7 +445,12 @@ def image_to_file(filename, image):
     return SimpleUploadedFile(filename, temp.read(), content_type='image/jpeg')
 
 def save_thumbnail(target_path, orig):
-    thumbnail = ImageOps.fit(orig.convert('RGB'), (THUMBNAIL_SIZE, THUMBNAIL_SIZE), Image.ANTIALIAS)
+
+    print 'colorspace'
+    orig = orig.convert('RGB')
+    print 'resizing'
+    thumbnail = ImageOps.fit(orig, (THUMBNAIL_SIZE, THUMBNAIL_SIZE), Image.ANTIALIAS)
+    print 'saving'
     return default_storage.save(target_path, image_to_file('thumbnail.jpg', thumbnail))
 
 @superuser_only
@@ -492,6 +494,7 @@ def new_attachment(request):
     if request.method != 'POST': return HttpResponseBadRequest()
     def go():
         file = request.FILES.get('file', False)
+        print 'processing', file.name
         if not file: return {'success': False,
                              'error': 'file not uploaded',
                              'files': request.FILES.keys()
@@ -500,17 +503,18 @@ def new_attachment(request):
         file.seek(0)
 
         if is_image(file.name):
-            rotated, image = rotate(Image.open(StringIO(file.read())))
-            if rotated: 
-                print 'overwriting file'
-                file = image_to_file(file.name, image)
-            thumbnail_path = save_thumbnail(os.path.join('attachments', md5, 'thumbnail.jpg'), image)
+            with NamedTemporaryFile() as input, NamedTemporaryFile() as output, NamedTemporaryFile() as thumbnail:
+                input.write(file.read())
+                check_call('/usr/bin/convert -auto-orient {input} {output}'.format(input=input.name, output=output.name).split())
+                check_call('/usr/bin/convert {src} -thumbnail {sz}^x{sz}^ -gravity center -extent {sz}x{sz} {thumbnail}'.format(src=output.name, sz=THUMBNAIL_SIZE, thumbnail=thumbnail.name).split())
+                file_path = default_storage.save(os.path.join('attachments', md5, file.name), ContentFile(output.read()))
+                thumbnail_path = default_storage.save(os.path.join('attachments', md5, 'thumbnail.jpg'), ContentFile(thumbnail.read()))
             is_picture = True
         else:
+            file_path = default_storage.save(os.path.join('attachments', md5, file.name), file)
             thumbnail_path = None
             is_picture = False
 
-        file_path = default_storage.save(os.path.join('attachments', md5, file.name), file)
         thumbnail_path = thumbnail_path or file_path
 
         dated = date.today()
@@ -530,7 +534,9 @@ def new_attachment(request):
                 'thumbnail_path': attachment.thumbnail.url,
                 'pk': attachment.pk,
                }
-    return HttpResponse(json.dumps(go()))
+    ret = HttpResponse(json.dumps(go()))
+    gc.collect()
+    return ret
 
 def signup(request):
     security_error = False

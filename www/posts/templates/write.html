@@ -24,7 +24,13 @@
 				<div class="row form-group">
 					<label class="col-sm-2 control-label">첨부</label>
 					<div class="col-sm-10">
-						<input id="upload-attachment" type="button" value="업로드"/>
+						<div id="dZUpload" class="dropzone">
+							드래그 앤 드롭
+							<div class="dz-default dz-message">
+							</div>
+						</div>
+						<img id="loading" style="display: none;" src="{% static "loading.gif" %}"/>
+						{# <input id="upload-attachment" type="button" value="업로드"/> #}
 						{# <input id="upload-attachment2" type="button" value="&nbsp;" class="in-progress"/> #}
 						<input id="import-attachments" type="button" value="앨범에서 가져오기"/>
 
@@ -83,9 +89,9 @@
 			$(function() {
 			});
 		</script>
-	<script language="javascript" src="{% static "ajaxupload.js" %}"></script>
 	<script language="javascript" src="{% static "bootstrap-datepicker.js" %}"></script>
 	<script language="javascript" src="{% static "jquery-ui.min.js" %}"></script>
+	<script language="javascript" src="{% static "dropzone.js" %}"></script>
 	<script language="javascript">
 
 		function add_attachment(file_path, thumbnail_path, pk) {
@@ -127,8 +133,56 @@
 			});
 			return JSON.stringify(attachments);
 		}
-
+		// using jQuery
+		function getCookie(name) {
+			var cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				var cookies = document.cookie.split(';');
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = jQuery.trim(cookies[i]);
+					// Does this cookie string begin with the name we want?
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+		var csrftoken = getCookie('csrftoken');
 		$(function() {
+
+			Dropzone.autoDiscover = false;
+			$("#dZUpload").dropzone({
+				url: "{% url "new-attachment" %}",
+				addRemoveLinks: true,
+				parallelUploads: 1,
+				createImageThumbnails: false,
+				previewTemplate : '<div style="display:none"></div>',
+				success: function (file, response) {
+					console.log("success! " + response);
+					response = JSON.parse(response);
+					if(response.is_picture) {
+					    add_attachment(response.file_path, response.thumbnail_path, response.pk);
+					}
+					else {
+						var public = $("#id_body_public");
+						public.val(public.val() + "\n[" + file + "](" + response.file_path + ")");
+						alert("Attached a non-image file: link appended to post body.");
+					}
+				},
+				error: function (file, response) {
+					console.log("error! " + response);
+					file.previewElement.classList.add("dz-error");
+				},
+				headers: {
+					'X-CSRFToken': csrftoken,
+				},
+				init: function() {
+					this.on("queuecomplete", function() { $("#loading").hide(); });
+					this.on("addedfile", function(file) { $("#loading").show(); });
+				},
+			});		 
 			$("li.attachment").each(function() {
 				var $this = $(this);
 				if(!$this.hasClass("attachment-template")) {
@@ -179,35 +233,6 @@
 				window.onbeforeunload = function() { }
 				
 				$("#id_serialized_attachments").val(summarize_attachments());
-			});
-
-			new AjaxUpload("upload-attachment", {
-				action: "{% url "new-attachment" %}",
-				data: {
-					csrfmiddlewaretoken: $("form input[name=csrfmiddlewaretoken]").val()
-				},
-				name: "file",
-				autoSubmit: true,
-				responseType: "json",
-				onSubmit: function() {
-					uploading = true;
-					$("#upload-attachment").attr('value', '  ').addClass('in-progress');
-				},
-				onComplete: function(file, response) {
-					uploading = false;
-					$("#upload-attachment").attr('value', '업로드').removeClass('in-progress');
-
-					if(response.success) {
-						if(response.is_picture) {
-							add_attachment(response.file_path, response.thumbnail_path, response.pk);
-						}
-						else {
-							var public = $("#id_body_public");
-							public.val(public.val() + "\n[" + file + "](" + response.file_path + ")");
-							alert("Attached a non-image file: link appended to post body.");
-						}
-					}
-				}
 			});
 
 			window.onbeforeunload = function() {

@@ -41,7 +41,7 @@ textarea, input[type=text], input[type=password], input[type=email] {
 	padding: 8px;
 }
 
-input[type=button].in-progress {
+.in-progress {
 	background-image: url(loading.gif);
 	background-repeat: no-repeat;
 	background-position: center;
