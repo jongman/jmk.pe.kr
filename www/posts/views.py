@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout as logout_user
-from django.core.files.storage import DefaultStorage
+from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.mail import send_mail
 from django.template import RequestContext
@@ -16,7 +16,7 @@ import bcrypt
 from json import dumps
 from taggit.models import Tag
 from pytz import timezone
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ExifTags
 
 import json
 import hashlib
@@ -412,17 +412,44 @@ def md5file(file):
 def is_image(file_name):
     return file_name.lower().split('.')[-1] in ('jpeg', 'jpg', 'png', 'gif')
 
-def save_thumbnail(target_path, file):
-    orig = Image.open(StringIO(file.read())).convert('RGB')
-    thumbnail = ImageOps.fit(orig, (THUMBNAIL_SIZE, THUMBNAIL_SIZE),
-                             Image.ANTIALIAS)
-    temp = StringIO()
-    thumbnail.save(temp, 'jpeg')
-    temp.seek(0)
+# shamelessly copied from http://stackoverflow.com/questions/38373877/django-rest-framework-autorotate-image-with-pil
+def rotate(image):
+    rotated = False
+    if hasattr(image, '_getexif'):  # only present in JPEGs
+        orientation = None
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+        print 'rotation', orientation
+        e = image._getexif()  # returns None if no EXIF data
+        print 'e', e is None
+        if e is not None:
+            exif = dict(e.items())
+            orientation = exif[orientation]
 
-    suf = SimpleUploadedFile(file.name, temp.read(), content_type='image/jpeg')
-    storage = DefaultStorage()
-    return storage.save(target_path, suf)
+            if orientation == 3:
+                rotated = True
+                image = image.transpose(Image.ROTATE_180)
+            elif orientation == 6:
+                rotated = True
+                image = image.transpose(Image.ROTATE_270)
+            elif orientation == 8:
+                rotated = True
+                image = image.transpose(Image.ROTATE_90)
+    else:
+        print 'image doesn have exif'
+    print 'rotated', rotated
+    return rotated, image
+
+def image_to_file(filename, image):
+    temp = StringIO()
+    image.save(temp, 'jpeg')
+    temp.seek(0)
+    return SimpleUploadedFile(filename, temp.read(), content_type='image/jpeg')
+
+def save_thumbnail(target_path, orig):
+    thumbnail = ImageOps.fit(orig.convert('RGB'), (THUMBNAIL_SIZE, THUMBNAIL_SIZE), Image.ANTIALIAS)
+    return default_storage.save(target_path, image_to_file('thumbnail.jpg', thumbnail))
 
 @superuser_only
 def list_attachment_folders(request):
@@ -470,18 +497,21 @@ def new_attachment(request):
                              'files': request.FILES.keys()
                             }
         md5 = md5file(file)
-        target_path = os.path.join('attachments', md5, file.name)
-        storage = DefaultStorage()
-        file_path = storage.save(target_path, file)
+        file.seek(0)
 
-        is_picture = False
         if is_image(file.name):
-            target_path = os.path.join('attachments', md5, 'thumbnail.jpg')
-            file.seek(0)
-            thumbnail_path = save_thumbnail(target_path, file)
+            rotated, image = rotate(Image.open(StringIO(file.read())))
+            if rotated: 
+                print 'overwriting file'
+                file = image_to_file(file.name, image)
+            thumbnail_path = save_thumbnail(os.path.join('attachments', md5, 'thumbnail.jpg'), image)
             is_picture = True
         else:
-            thumbnail_path = file_path
+            thumbnail_path = None
+            is_picture = False
+
+        file_path = default_storage.save(os.path.join('attachments', md5, file.name), file)
+        thumbnail_path = thumbnail_path or file_path
 
         dated = date.today()
         now = datetime.now()

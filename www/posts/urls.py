@@ -1,9 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 import views
 import feeds
 
-urlpatterns = patterns(
-    'posts.views',
+urlpatterns = [
 
     url(r'^/?$', views.timeline),
     url(r'^timeline/?$', views.timeline, name='timeline'),
@@ -66,5 +65,4 @@ urlpatterns = patterns(
 
     url(r'^feed/$', feeds.LatestEntriesFeed()),
 
-
-)
+]

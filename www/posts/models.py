@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.template.loader import get_template
@@ -105,7 +105,7 @@ class Comment(models.Model):
     comment = models.TextField()
 
     timestamp = models.DateTimeField(auto_now_add=True)
-    ip_address = models.IPAddressField(null=True)
+    ip_address = models.GenericIPAddressField(null=True)
 
     deleted = models.BooleanField(default=False)
 

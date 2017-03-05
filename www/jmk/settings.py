@@ -60,6 +60,25 @@ MIDDLEWARE_CLASSES = (
 # TEMPLATE_CONTEXT_PROCESSORS = (
 #     'django.core.context_processors.request',
 # )
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 ROOT_URLCONF = 'jmk.urls'
 
@@ -115,9 +134,6 @@ class InvalidVarException(object):
         if search=='%s':
             return True
         return False
-
-TEMPLATE_DEBUG=True
-TEMPLATE_STRING_IF_INVALID = InvalidVarException()
 
 SMUGMUG_SIZE = 'X3Large'
 SMUGMUG_SYNC_CATEGORY = 'Archive'
