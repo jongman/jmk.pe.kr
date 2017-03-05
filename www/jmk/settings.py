@@ -25,8 +25,6 @@ from local_settings import SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = ['jmk.pe.kr', 'www.jmk.pe.kr']
 
 
