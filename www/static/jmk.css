@@ -395,10 +395,10 @@ ul.depth2 { margin-left: 40px; }
 ul.depth3 { margin-left: 60px; }
 ul.depth4 { margin-left: 80px; }
 ul.depth5 { margin-left: 100px; }
-ul.depth7 { margin-left: 120px; }
-ul.depth8 { margin-left: 120px; }
-ul.depth9 { margin-left: 120px; }
-ul.depth10 { margin-left: 120px; }
+ul.depth6 { margin-left: 120px; }
+ul.depth7 { margin-left: 130px; }
+ul.depth8 { margin-left: 140px; }
+ul.depth9 { margin-left: 150px; }
 
 div.private-body {
 	background-color: #eee;
